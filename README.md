@@ -51,3 +51,85 @@ Para testar, envie essa requisição para criar uma coleção:
 >**Link:** http://localhost:8080/colecao
 
 E então, clique em **Send**, se tudo estiver correto, na direita haverá o retorno **201**, indicando que o recurso foi criado, portanto, também indicando que o banco está funcionando corretamente.
+
+## Modelo do documento JSON
+
+Cada série é gravada como um documento na coleção `series`, dentro do banco `tvmaze`. O documento base de teste fica em [`testes/serie-exemplo.json`](testes/serie-exemplo.json):
+
+```json
+{
+  "tvmazeId": 1,
+  "nome": "Under the Dome",
+  "tipo": "Scripted",
+  "idioma": "English",
+  "generos": ["Drama", "Science-Fiction", "Thriller"],
+  "status": "Ended",
+  "estreia": "2013-06-24",
+  "duracaoMin": 60,
+  "notaTvmaze": 6.5,
+  "emissora": { "nome": "CBS", "pais": "United States" },
+  "imagem": "https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg",
+  "favorito": false,
+  "minhaNota": null,
+  "comentario": "",
+  "criadoEm": "2026-10-24T14:00:00.000Z",
+  "atualizadoEm": "2026-10-24T14:00:00.000Z"
+}
+```
+
+| Campo | Tipo | Origem |
+| --- | --- | --- |
+| `tvmazeId`, `duracaoMin`, `notaTvmaze` | número | TVmaze (`id`, `runtime`, `rating.average`) |
+| `nome`, `tipo`, `idioma`, `status`, `imagem` | texto | TVmaze |
+| `estreia` | data | TVmaze (`premiered`) |
+| `generos` | lista embutida | TVmaze (`genres`) |
+| `emissora` | objeto embutido | TVmaze (`network` ou `webChannel`) |
+| `favorito`, `minhaNota`, `comentario`, `criadoEm`, `atualizadoEm` | campos do grupo | não existem na API |
+
+## Testando o banco com o JSON base
+
+Com o ambiente rodando (`docker compose up -d`) e o Insomnia configurado como explicado acima (Auth **Basic** `admin`/`secret` e header `Content-Type: application/json`).
+
+**Atenção à URL:** o nosso `docker-compose.yml` expõe todos os bancos do MongoDB na raiz, então a URL segue o formato `http://localhost:8080/{banco}/{coleção}`. O nosso banco é `tvmaze` e a coleção é `series`.
+
+### 1. Criar o banco — PUT (201)
+
+>**Método:** PUT
+
+>**Link:** http://localhost:8080/tvmaze
+
+### 2. Criar a coleção — PUT (201)
+
+>**Método:** PUT
+
+>**Link:** http://localhost:8080/tvmaze/series
+
+Se o banco ou a coleção já existirem, o retorno é **200** em vez de 201, o que também está correto.
+
+### 3. Inserir uma série — POST (201)
+
+>**Método:** POST
+
+>**Link:** http://localhost:8080/tvmaze/series
+
+Em **Body**, escolha **JSON** e cole o conteúdo de `testes/serie-exemplo.json`. O retorno deve ser **201**, e o id do novo documento aparece no cabeçalho **Location** da resposta (aba *Headers*), no final do link.
+
+### 4. Listar as séries — GET (200)
+
+>**Método:** GET
+
+>**Link:** http://localhost:8080/tvmaze/series?pagesize=100
+
+O retorno deve ser **200**, com a lista contendo o documento inserido. Cada documento vem com um `_id` no formato `{ "$oid": "..." }`.
+
+### 5. Buscar uma série pelo id — GET (200 / 404)
+
+>**Método:** GET
+
+>**Link:** http://localhost:8080/tvmaze/series/{id}
+
+Troque `{id}` pelo valor do `$oid`. Com um id que não existe, o retorno é **404**.
+
+### Coleção pronta para importar
+
+Todas as requisições do projeto (incluindo PUT, PATCH e DELETE de documentos, usados nas próximas etapas) estão em [`insomnia/colecao.json`](insomnia/colecao.json). No Insomnia: **Import** → selecione o arquivo. A autenticação Basic já vem configurada, e a requisição de POST guarda automaticamente o id criado para as requisições seguintes.
