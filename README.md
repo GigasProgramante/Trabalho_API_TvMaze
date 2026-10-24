@@ -28,7 +28,7 @@ Alternativamente, para que o comando seja executado em segundo plano, permitindo
 
 Para poder enviar requisições sem a necessidade de desenvolver o sistema precisamos utilizar um programa que permite enviar requisições diretamente, recomendo o [Insomnia](https://insomnia.rest/download).
 
-## Como fazer uma requisição no Insomnia
+### Como fazer uma requisição no Insomnia
 
 Ao iniciar o programa, clique em **Send a request**, isso vai te levar à interface que permite enviar as requisições.
 
@@ -41,6 +41,8 @@ Nessa tela, clique em **Auth** abaixo do campo no qual inserimos o link para a r
 **Obs:** Logicamente as credenciais não serão essas no projeto final.
 
 Agora, clique em **Headers**, e adicione um novo cabeçalho nomeado **Content-type** com o valor **application/json**, e pronto, agora é possível enviar requisições normalmente.
+
+### Enviando uma requisição
 
 Para testar, envie essa requisição para criar uma coleção:
 
