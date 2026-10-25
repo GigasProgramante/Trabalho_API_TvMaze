@@ -52,8 +52,9 @@ Para testar, envie essa requisição para criar uma coleção:
 
 E então, clique em **Send**, se tudo estiver correto, na direita haverá o retorno **201**, indicando que o recurso foi criado, portanto, também indicando que o banco está funcionando corretamente.
 
->Tenha em mente que esse teste não é necessário caso você pretenda executar o teste completo descrito nas próximas seções.
 
+>Tenha em mente que esse teste não é necessário caso você pretenda executar o teste completo descrito nas próximas seções.
+>
 ## Modelo do documento JSON
 
 Cada série é gravada como um documento na coleção `series`, dentro do banco `tvmaze`. O documento base de teste fica em [`testes/serie-exemplo.json`](testes/serie-exemplo.json):
