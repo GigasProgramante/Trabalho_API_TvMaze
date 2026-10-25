@@ -1,0 +1,18 @@
+{
+  "tvmazeId": 1,
+  "nome": "Under the Dome",
+  "tipo": "Scripted",
+  "idioma": "English",
+  "generos": ["Drama", "Science-Fiction", "Thriller"],
+  "status": "Ended",
+  "estreia": "2013-06-24",
+  "duracaoMin": 60,
+  "notaTvmaze": 6.5,
+  "emissora": { "nome": "CBS", "pais": "United States" },
+  "imagem": "https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg",
+  "favorito": false,
+  "minhaNota": null,
+  "comentario": "",
+  "criadoEm": "2026-10-24T14:00:00.000Z",
+  "atualizadoEm": "2026-10-24T14:00:00.000Z"
+}

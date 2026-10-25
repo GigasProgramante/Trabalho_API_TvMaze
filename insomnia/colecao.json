@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Trabalho API TvMaze - RESTHeart",
+    "description": "Requisições do projeto: leitura na API TVmaze e CRUD no MongoDB via RESTHeart. Auth Basic admin/secret (padrão do RESTHeart local).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "admin",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "secret",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "banco",
+      "value": "tvmaze"
+    },
+    {
+      "key": "colecao",
+      "value": "series"
+    },
+    {
+      "key": "id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "0. GET séries na TVmaze (API de origem)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "url": "https://api.tvmaze.com/shows?page=1"
+      }
+    },
+    {
+      "name": "1a. PUT criar banco tvmaze (201)",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/{{banco}}"
+      }
+    },
+    {
+      "name": "1b. PUT criar coleção series (201)",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}"
+      }
+    },
+    {
+      "name": "2. POST inserir série (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "const loc = pm.response.headers.get('Location');",
+              "if (loc) { pm.collectionVariables.set('id', loc.split('/').pop()); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\n    \"Drama\",\n    \"Science-Fiction\",\n    \"Thriller\"\n  ],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": {\n    \"nome\": \"CBS\",\n    \"pais\": \"United States\"\n  },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"favorito\": false,\n  \"minhaNota\": null,\n  \"comentario\": \"\",\n  \"criadoEm\": \"2026-10-24T14:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-24T14:00:00.000Z\"\n}"
+        },
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}"
+      }
+    },
+    {
+      "name": "3. GET listar séries (200)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}?pagesize=100"
+      }
+    },
+    {
+      "name": "4. GET buscar por id (200 / 404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
+      }
+    },
+    {
+      "name": "5. PUT substituir documento (200)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome (editado)\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\"Drama\", \"Science-Fiction\"],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": { \"nome\": \"CBS\", \"pais\": \"United States\" },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"favorito\": true,\n  \"minhaNota\": 8,\n  \"comentario\": \"Começo bom, final fraco\",\n  \"criadoEm\": \"2026-10-22T19:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-22T20:00:00.000Z\"\n}"
+        },
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
+      }
+    },
+    {
+      "name": "6. PATCH marcar favorito (200)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"favorito\": true,\n  \"atualizadoEm\": \"2026-10-22T20:30:00.000Z\"\n}"
+        },
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
+      }
+    },
+    {
+      "name": "7. DELETE excluir (204)",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
+      }
+    }
+  ]
+}
