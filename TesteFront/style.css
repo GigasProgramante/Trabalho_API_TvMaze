@@ -1,0 +1,136 @@
+:root {
+    --color-page-background: #352b1d;
+    --color-text: #080808;
+    --color-heading: #111827;
+    --color-surface: #ffffff;
+    --color-accent: #2563eb;
+    --color-accent-hover: #1d4ed8;
+    --color-card-background: rgb(255, 212, 147);
+    --color-card-shadow: #000000;
+    --color-image-shadow: #080808;
+    --color-soft-shadow: rgb(31 41 55 / 8%);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 32px;
+    background-color: var(--color-page-background);
+    color: var(--color-text);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-heading);
+    line-height: 1.2;
+}
+
+h1 {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: var(--color-surface);
+    border-left: 5px solid var(--color-accent);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--color-soft-shadow);
+    font-size: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 720px;
+    margin: 1.5rem auto;
+}
+
+nav form {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    padding: 9.6px 16px;
+    border: 0;
+    border-radius: 6px;
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-accent-hover);
+}
+
+.card {
+  transition: box-shadow 0.2s ease;
+  padding: 8px 16px;
+  background-color: var(--color-card-background);
+  border-radius: 8px;
+  max-height: 800px;
+  box-shadow: 8px 8px 0 var(--color-card-shadow);
+}
+
+.card:hover {
+  transition: box-shadow 0.2s ease;
+  box-shadow: 0px 0px 0 var(--color-card-shadow);
+}
+
+.card img {
+    border-radius: 8px;
+    box-shadow: 0 8px 8px var(--color-image-shadow);
+    min-width: auto;
+    position: sticky;
+}
+
+.card p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+}
+
+.card h2 {
+    height: 35px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+#series {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 16px;
+    }
+}

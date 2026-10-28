@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste API</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Teste requisição API</h1>
+    <nav>
+        <form id="search-form">
+        <input
+            id="search-input"
+            type="search"
+            placeholder="Digite o nome de uma série"
+            aria-label="Nome da série"
+            required
+        >
+        <button type="submit">Buscar</button>
+        </form>
+    </nav>
+    <p id="status" aria-live="polite"></p>
+        <div id="series"></div>
+</body>
+</html>
