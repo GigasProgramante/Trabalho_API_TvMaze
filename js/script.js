@@ -90,6 +90,10 @@ form.addEventListener("submit", async (event) => {
       detalhar.className = "detalhar";
       card.append(detalhar);
 
+      detalhar.addEventListener("click", () => {
+        window.location.href = `detalhes.html?id=${show.id}`;
+      });
+
       // Coloca o card pronto dentro do elemento de resultados.
       seriesContainer.append(card);
     });
