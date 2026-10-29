@@ -102,7 +102,8 @@ button:hover {
 
 .card {
     background-color: var(--color-card-background);
-    max-height: 800px;
+    height: 600px;
+    position: relative;
 }
 
 .card img {
@@ -129,7 +130,32 @@ button:hover {
     overflow: hidden;
 }
 
+.card button {
+    box-shadow: none;
+    width: 100%;
+    height: 60px;
+    padding: 0;
+    display: none;
+}
+
+.card:hover button {
+    display: block;
+}
+
+.card .detalhar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.card .guardar {
+    position: absolute;
+}
+
 #series {
+    margin-inline: auto;
+    max-width: 80%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;

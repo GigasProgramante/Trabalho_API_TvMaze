@@ -48,6 +48,11 @@ form.addEventListener("submit", async (event) => {
       const card = document.createElement("article");
       card.className = "card";
 
+      //const guardar = document.createElement("button");
+      //guardar.textContent = "Guardar no banco";
+      //card.className = "guardar"
+      //card.append(guardar)
+
       const title = document.createElement("h2");
       title.textContent = show.name;
       card.append(title);
@@ -79,6 +84,11 @@ form.addEventListener("submit", async (event) => {
         : "Descrição indisponível.";
 
       card.append(desc);
+
+      const detalhar = document.createElement("button");
+      detalhar.textContent = "Ver Detalhes";
+      detalhar.className = "detalhar";
+      card.append(detalhar);
 
       // Coloca o card pronto dentro do elemento de resultados.
       seriesContainer.append(card);
