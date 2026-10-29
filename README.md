@@ -136,3 +136,52 @@ Troque `{id}` pelo valor do `$oid`. Com um id que não existe, o retorno é **40
 ### Coleção pronta para importar
 
 Todas as requisições do projeto (incluindo PUT, PATCH e DELETE de documentos, usados nas próximas etapas) estão em [`insomnia/colecao.json`](insomnia/colecao.json). No Insomnia: **Import** → selecione o arquivo. A autenticação Basic já vem configurada, e a requisição de POST guarda automaticamente o id criado para as requisições seguintes.
+
+## Importação dos dados (GET na TVmaze + POST no banco)
+
+O script [`scripts/importar.mjs`](scripts/importar.mjs) faz a carga inicial da coleção:
+
+1. **PUT** `/tvmaze` e **PUT** `/tvmaze/series`: garante que o banco e a coleção existem (201 na primeira vez, 200 se já existirem).
+2. **GET** `https://api.tvmaze.com/shows?page=0`: busca as séries na API de origem (só leitura).
+3. Converte cada série para o modelo de documento do grupo (seção "Modelo do documento JSON").
+4. **POST** `/tvmaze/series` para cada série: grava o documento (201, com o id no cabeçalho `Location`).
+
+O script não duplica séries: antes de gravar, ele lê do banco os `tvmazeId` que já existem e pula esses.
+
+### Como rodar
+
+Pré-requisito: [Node.js](https://nodejs.org) 18 ou mais novo (confira com `node --version`).
+
+Com o ambiente rodando (`docker compose up -d`), na raiz do projeto:
+
+```bash
+node scripts/importar.mjs        # importa 40 séries
+node scripts/importar.mjs 60     # ou outra quantidade
+```
+
+No final ele mostra quantas séries foram inseridas e o total no banco. Para conferir no Insomnia: `GET /tvmaze/series/_size` (200).
+
+## Endpoints
+
+Base do banco: `http://localhost:8080/tvmaze/series`, com autenticação Basic `admin`/`secret`.
+
+| Ação | Método e URL | Status esperado |
+| --- | --- | --- |
+| Buscar séries na origem | `GET https://api.tvmaze.com/shows?page=0` | 200 |
+| Buscar série na origem por nome | `GET https://api.tvmaze.com/search/shows?q={nome}` | 200 |
+| Criar o banco | `PUT /tvmaze` | 201 (200 se já existir) |
+| Criar a coleção | `PUT /tvmaze/series` | 201 (200 se já existir) |
+| Inserir série | `POST /tvmaze/series` | 201 (id no cabeçalho `Location`) |
+| Listar séries | `GET /tvmaze/series?pagesize=100` | 200 |
+| Contar séries | `GET /tvmaze/series/_size` | 200 |
+| Buscar por nome no banco | `GET /tvmaze/series?filter={"nome":{"$regex":"dome","$options":"i"}}` | 200 |
+| Filtrar por gênero | `GET /tvmaze/series?filter={"generos":"Drama"}` | 200 |
+| Buscar por id | `GET /tvmaze/series/{id}` | 200 ou 404 |
+| Substituir série | `PUT /tvmaze/series/{id}` | 200 |
+| Alterar campos | `PATCH /tvmaze/series/{id}` | 200 |
+| Excluir série | `DELETE /tvmaze/series/{id}` | 204 |
+
+**Atenção:** o RESTHeart devolve no máximo 100 documentos por página por padrão. Para listar tudo, use `?pagesize=1000` (ou `&page=2`, `&page=3`...).
+
+Todas essas requisições estão na coleção [`insomnia/colecao.json`](insomnia/colecao.json).
+
