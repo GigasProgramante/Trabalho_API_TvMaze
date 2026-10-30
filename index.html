@@ -3,27 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste API</title>
+    <title>TVMaze Explorer | Catálogo NoSQL</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
 <body>
-    <main>
-        <h1>Teste requisição API</h1>
+    <main class="container">
+        <!-- Cabeçalho Oficial TVMaze -->
+        <header class="app-header">
+            <div class="header-titles">
+                <h1>📺 TVMaze Explorer</h1>
+                <p>Catálogo de Séries & Integração RESTHeart NoSQL</p>
+            </div>
+            <div class="header-badge">Eng. de Software</div>
+        </header>
+
+        <!-- Barra de Busca -->
         <nav>
             <form id="search-form">
-            <input
-                id="search-input"
-                type="search"
-                placeholder="Digite o nome de uma série"
-                aria-label="Nome da série"
-                required
-            >
-            <button type="submit">Buscar</button>
+                <input
+                    id="search-input"
+                    type="search"
+                    placeholder="Pesquisar série (ex: Harry, Breaking Bad)..."
+                    aria-label="Nome da série"
+                    required
+                >
+                <button type="submit">Buscar</button>
             </form>
         </nav>
+
+        <!-- Mensagem de Status -->
         <p id="status" aria-live="polite"></p>
-            <div id="series"></div>
+        
+        <!-- Grid de Cards das Séries -->
+        <div id="series"></div>
     </main>
 </body>
 </html>
