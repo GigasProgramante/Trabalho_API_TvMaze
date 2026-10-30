@@ -1,0 +1,201 @@
+:root {
+    --color-page-background: #352b1d;
+    --color-text: #080808;
+    --color-heading: #111827;
+    --color-surface: rgb(255, 212, 147);
+    --color-accent: #1b160f;
+    --color-accent-hover: #2e2416;
+    --color-card-background: rgb(255, 212, 147);
+    --color-card-shadow: #000000;
+    --color-input-background: rgb(255, 212, 147);
+    --color-input-placeholder: #353535;
+}
+
+button:hover,
+.card:hover,
+#search-input:focus {
+    box-shadow: 0 0 0 var(--color-card-shadow);
+}
+
+h1,
+button,
+.card,
+#status,
+#search-input {
+    border-radius: 0;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 8px 8px 0 var(--color-card-shadow);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 32px;
+    background-color: var(--color-page-background);
+    color: var(--color-text);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-heading);
+    line-height: 1.2;
+}
+
+h1 {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: var(--color-surface);
+    font-size: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 720px;
+    margin: 1.5rem auto;
+}
+
+nav form {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    padding: 9.6px 16px;
+}
+
+button {
+    border: 0;
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-accent-hover);
+}
+
+.card {
+    background-color: var(--color-card-background);
+    height: 600px;
+    position: relative;
+}
+
+.card img {
+    min-width: 100%;
+    position: sticky;
+}
+
+.card p {
+    margin: 8px 16px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
+    overflow: hidden;
+}
+
+.card h2 {
+    padding: 8px 16px;
+    height: 35px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.card button {
+    box-shadow: none;
+    width: 100%;
+    height: 60px;
+    padding: 0;
+    display: none;
+}
+
+.card:hover button {
+    display: block;
+}
+
+.card .detalhar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.card .guardar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    font-size: small;
+    height: 20px;
+}
+
+#series {
+    margin-inline: auto;
+    max-width: 80%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+#search-input {
+    width: min(320px, 70vw);
+    padding: 10px 12px;
+    border: 2px solid var(--color-accent);
+    background-color: var(--color-input-background);
+    color: var(--color-text);
+}
+
+#search-input:focus {
+    outline: 0px solid;
+}
+
+#search-input::placeholder {
+    color: var(--color-input-placeholder);
+}
+
+#status {
+    padding: 8px;
+    margin-inline: auto;
+    text-align: center;
+    background: var(--color-surface);
+    width: fit-content;
+}
+
+#status:empty {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 16px;
+    }
+}
