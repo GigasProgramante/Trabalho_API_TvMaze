@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Série | TVMaze & NoSQL</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/detalhes.js" defer></script>
+</head>
+<body>
+    <main class="container">
+        <!-- Cabeçalho -->
+        <header class="app-header">
+            <div class="header-titles">
+                <h1>🔍 Detalhes da Série</h1>
+                <p>Informações completas obtidas via TVMaze API</p>
+            </div>
+            <a href="index.html" class="header-badge" style="text-decoration: none; display: inline-block;">← Voltar</a>
+        </header>
+
+        <!-- Container onde o js/detalhes.js vai injetar os dados -->
+        <section id="detalhes" class="card" style="padding: 24px; height: auto; display: block;">
+            <p id="status">A carregar detalhes...</p>
+        </section>
+    </main>
+</body>
+</html>
