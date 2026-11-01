@@ -1,7 +1,7 @@
-// Endereço principal da API do TVMaze
+import { criarDocumento, guardarSerie } from "./restheart.js";
+import { criarCardSerie } from "./series-card.js";
+
 const tvMazeUrl = "https://api.tvmaze.com";
-// Endereço do RESTHeart / MongoDB (ajuste a collection se necessário, ex: /series)
-const restHeartUrl = "http://localhost:8080/series";
 
 // Busca no HTML os elementos que serão usados pelo JavaScript.
 const form = document.querySelector("#search-form");
@@ -36,84 +36,24 @@ form.addEventListener("submit", async (event) => {
     const results = await response.json();
 
     results.forEach(({ show }) => {
-      const card = document.createElement("article");
-      card.className = "card";
+      const serie = criarDocumento(show);
+      const card = criarCardSerie(serie, {
+        aoGuardar: async (botao) => {
+          botao.disabled = true;
+          botao.textContent = "Guardando...";
 
-      // 1. Imagem no topo (se existir)
-      if (show.image?.medium) {
-        const image = document.createElement("img");
-        image.src = show.image.medium;
-        image.alt = `Imagem da série ${show.name}`;
-        card.append(image);
-      }
-
-      // 2. Título da série
-      const title = document.createElement("h2");
-      title.textContent = show.name;
-      card.append(title);
-
-      // 3. Descrição limpa
-      const desc = document.createElement("p");
-      desc.textContent = show.summary
-        ? new DOMParser()
-            .parseFromString(show.summary, "text/html")
-            .body.textContent
-            .trim()
-        : "Descrição indisponível.";
-      card.append(desc);
-
-      // 4. Botão "Guardar no banco" (POST para o RESTHeart)
-      const guardar = document.createElement("button");
-      guardar.textContent = "Guardar no banco";
-      guardar.className = "guardar";
-      
-      guardar.addEventListener("click", async () => {
-        try {
-          // Estrutura do documento para o MongoDB via RESTHeart
-          const serieData = {
-            tvmaze_id: show.id,
-            name: show.name,
-            genres: show.genres || [],
-            rating: show.rating?.average || null,
-            summary: desc.textContent,
-            image: show.image?.medium || ""
-          };
-
-          const postResponse = await fetch(restHeartUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(serieData)
-          });
-
-          if (!postResponse.ok) {
-            throw new Error("Erro ao guardar no servidor.");
+          try {
+            await guardarSerie(show);
+            botao.textContent = "Guardada com sucesso";
+            status.textContent = `${show.name} foi guardada no banco de dados.`;
+          } catch (error) {
+            console.error("Erro ao guardar no RESTHeart:", error);
+            botao.disabled = false;
+            botao.textContent = "Guardar no banco";
+            status.textContent = error.message;
           }
-
-          guardar.textContent = "Guardado com sucesso! ✔";
-          guardar.style.backgroundColor = "#2d6a4f";
-          setTimeout(() => {
-            guardar.textContent = "Guardar no banco";
-            guardar.style.backgroundColor = "";
-          }, 2500);
-
-        } catch (err) {
-          console.error("Erro ao salvar no RESTHeart:", err);
-          alert("Não foi possível guardar no banco de dados. Verifique se o Docker/RESTHeart está a rodar.");
-        }
+        },
       });
-      card.append(guardar);
-
-      // 5. Botão "Ver Detalhes"
-      const detalhar = document.createElement("button");
-      detalhar.textContent = "Ver Detalhes";
-      detalhar.className = "detalhar";
-      detalhar.addEventListener("click", () => {
-        window.location.href = `detalhes.html?id=${show.id}`;
-      });
-      card.append(detalhar);
-
       seriesContainer.append(card);
     });
 

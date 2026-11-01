@@ -72,6 +72,7 @@ Cada série é gravada como um documento na coleção `series`, dentro do banco 
   "notaTvmaze": 6.5,
   "emissora": { "nome": "CBS", "pais": "United States" },
   "imagem": "https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg",
+  "resumo": "Descrição indisponível.",
   "favorito": false,
   "minhaNota": null,
   "comentario": "",
@@ -87,6 +88,7 @@ Cada série é gravada como um documento na coleção `series`, dentro do banco 
 | `estreia` | data | TVmaze (`premiered`) |
 | `generos` | lista embutida | TVmaze (`genres`) |
 | `emissora` | objeto embutido | TVmaze (`network` ou `webChannel`) |
+| `resumo` | texto | TVmaze (`summary`, sem tags HTML) |
 | `favorito`, `minhaNota`, `comentario`, `criadoEm`, `atualizadoEm` | campos do grupo | não existem na API |
 
 ## Testando o banco com o JSON base
@@ -139,7 +141,7 @@ Todas as requisições do projeto (incluindo PUT, PATCH e DELETE de documentos, 
 
 ## Importação dos dados (GET na TVmaze + POST no banco)
 
-O script [`scripts/importar.mjs`](scripts/importar.mjs) faz a carga inicial da coleção:
+O script [`js/importar.mjs`](js/importar.mjs) faz a carga inicial da coleção:
 
 1. **PUT** `/tvmaze` e **PUT** `/tvmaze/series`: garante que o banco e a coleção existem (201 na primeira vez, 200 se já existirem).
 2. **GET** `https://api.tvmaze.com/shows?page=0`: busca as séries na API de origem (só leitura).
@@ -155,8 +157,8 @@ Pré-requisito: [Node.js](https://nodejs.org) 18 ou mais novo (confira com `node
 Com o ambiente rodando (`docker compose up -d`), na raiz do projeto:
 
 ```bash
-node scripts/importar.mjs        # importa 40 séries
-node scripts/importar.mjs 60     # ou outra quantidade
+node js/importar.mjs        # importa 40 séries
+node js/importar.mjs 60     # ou outra quantidade
 ```
 
 No final ele mostra quantas séries foram inseridas e o total no banco. Para conferir no Insomnia: `GET /tvmaze/series/_size` (200).
@@ -184,4 +186,3 @@ Base do banco: `http://localhost:8080/tvmaze/series`, com autenticação Basic `
 **Atenção:** o RESTHeart devolve no máximo 100 documentos por página por padrão. Para listar tudo, use `?pagesize=1000` (ou `&page=2`, `&page=3`...).
 
 Todas essas requisições estão na coleção [`insomnia/colecao.json`](insomnia/colecao.json).
-

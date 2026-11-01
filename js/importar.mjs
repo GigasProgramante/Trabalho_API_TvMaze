@@ -1,7 +1,9 @@
 // Importação inicial: GET na API TVmaze + POST de cada série no banco (RESTHeart).
-// Como rodar (com o docker compose de pé):  node scripts/importar.mjs
-// Opcional: quantidade de séries ->         node scripts/importar.mjs 50
+// Como rodar (com o docker compose de pé):  node js/importar.mjs
+// Opcional: quantidade de séries ->         node js/importar.mjs 50
 // Precisa do Node.js 18 ou mais novo (fetch já vem embutido).
+
+import { garantir } from "./restheart-api.mjs";
 
 const TVMAZE = process.env.TVMAZE_URL || "https://api.tvmaze.com";
 const BASE = process.env.DB_URL || "http://localhost:8080";
@@ -31,6 +33,9 @@ function paraDocumento(show) {
     notaTvmaze: show.rating?.average ?? null,
     emissora: canal ? { nome: canal.name, pais: canal.country?.name ?? null } : null,
     imagem: show.image?.medium ?? null,
+    resumo: show.summary
+      ? show.summary.replace(/<[^>]*>/g, "").trim()
+      : "Descrição indisponível.",
     favorito: false,
     minhaNota: null,
     comentario: "",
@@ -40,12 +45,14 @@ function paraDocumento(show) {
 }
 
 // PUT cria o banco e a coleção: 201 na primeira vez, 200 se já existirem.
-async function garantir(url, nome) {
-  const res = await fetch(url, { method: "PUT", headers: HEADERS });
-  if (res.status !== 201 && res.status !== 200) {
-    throw new Error(`PUT ${nome} falhou com status ${res.status}`);
+async function garantirBancoEColecao() {
+  for (const [url, nome] of [
+    [BANCO, "banco tvmaze"],
+    [COLECAO, "coleção series"],
+  ]) {
+    const status = await garantir(url, nome, HEADERS);
+    console.log(`PUT ${nome} -> ${status}${status === 201 ? " (criado)" : " (já existia)"}`);
   }
-  console.log(`PUT ${nome} -> ${res.status}${res.status === 201 ? " (criado)" : " (já existia)"}`);
 }
 
 // GET no banco: ids da TVmaze já salvos, para não duplicar se o script rodar de novo.
@@ -59,8 +66,7 @@ async function idsJaSalvos() {
 
 async function main() {
   console.log(`Banco: ${COLECAO}`);
-  await garantir(BANCO, "banco tvmaze");
-  await garantir(COLECAO, "coleção series");
+  await garantirBancoEColecao();
 
   // GET na API de origem (só leitura).
   const resOrigem = await fetch(`${TVMAZE}/shows?page=0`);

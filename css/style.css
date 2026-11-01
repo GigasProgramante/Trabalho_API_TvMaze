@@ -69,6 +69,10 @@ body {
     letter-spacing: 0.5px;
 }
 
+.header-badge-link {
+    text-decoration: none;
+}
+
 /* Barra de Busca (Nav) */
 nav {
     display: flex;
@@ -126,6 +130,11 @@ button:hover {
 button:active {
     transform: translate(1px, 1px);
     box-shadow: 2px 2px 0 var(--color-card-shadow);
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.75;
 }
 
 /* Mensagem de Status */
