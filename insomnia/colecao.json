@@ -49,6 +49,16 @@
       }
     },
     {
+      "name": "0b. GET buscar série na TVmaze por nome (200)",
+      "request": {
+        "method": "GET",
+        "url": "https://api.tvmaze.com/search/shows?q=dome",
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
       "name": "1a. PUT criar banco tvmaze (201)",
       "request": {
         "method": "PUT",
@@ -100,10 +110,38 @@
       }
     },
     {
+      "name": "3b. GET contar séries no banco (200)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/_size"
+      }
+    },
+    {
+      "name": "3c. GET buscar no banco por nome (200)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}?filter={\"nome\":{\"$regex\":\"dome\",\"$options\":\"i\"}}"
+      }
+    },
+    {
+      "name": "3d. GET filtrar no banco por gênero (200)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}?filter={\"generos\":\"Drama\"}&pagesize=100"
+      }
+    },
+    {
       "name": "4. GET buscar por id (200 / 404)",
       "request": {
         "method": "GET",
         "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
+      }
+    },
+    {
+      "name": "4b. GET id inexistente (404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{banco}}/{{colecao}}/000000000000000000000000"
       }
     },
     {
