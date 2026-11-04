@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes da Série | TVMaze & NoSQL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/detalhes.js" defer></script>
 </head>
 <body>
-    <main class="container">
+    <main class="container py-4">
         <!-- Cabeçalho -->
-        <header class="app-header">
+        <header class="app-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-4">
             <div class="header-titles">
                 <h1>Detalhes da Série</h1>
                 <p>Informações completas obtidas via TVMaze API</p>
             </div>
-            <a href="index.html" class="header-badge" style="text-decoration: none; display: inline-block;">← Voltar</a>
+            <a href="index.html" class="btn btn-dark">← Voltar</a>
         </header>
 
         <!-- Container onde o js/detalhes.js vai injetar os dados -->
-        <section id="detalhes" class="card" style="padding: 24px; height: auto; display: block;">
-            <p id="status">A carregar detalhes...</p>
+        <section id="detalhes" class="card series-details p-4">
+            <p id="status" class="alert alert-info mb-0" role="status">A carregar detalhes...</p>
         </section>
     </main>
 </body>
