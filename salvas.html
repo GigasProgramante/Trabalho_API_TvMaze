@@ -4,33 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Séries guardadas | TVMaze Explorer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/salvas.js" type="module"></script>
 </head>
 <body>
-    <main class="container">
-        <header class="app-header">
+    <main class="container py-4">
+        <header class="app-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-4">
             <div class="header-titles">
                 <h1>Séries guardadas</h1>
                 <p>Seu catálogo armazenado no banco de dados</p>
             </div>
-            <a class="header-badge header-badge-link" href="index.html">Buscar séries</a>
+            <a class="btn btn-dark" href="index.html">Buscar séries</a>
         </header>
 
-        <nav>
-            <form id="search-form">
+        <nav class="mb-4">
+            <form id="search-form" class="input-group search-form">
                 <input
                     id="search-input"
+                    class="form-control"
                     type="search"
                     placeholder="Filtrar séries guardadas..."
                     aria-label="Filtrar séries guardadas"
                 >
-                <button type="submit">Filtrar</button>
+                <button class="btn btn-dark" type="submit">Filtrar</button>
             </form>
         </nav>
 
-        <p id="status" aria-live="polite">Carregando séries do banco...</p>
-        <div id="series"></div>
+        <p id="status" class="alert alert-info status-message" aria-live="polite">Carregando séries do banco...</p>
+        <div id="series" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4"></div>
     </main>
 </body>
 </html>
