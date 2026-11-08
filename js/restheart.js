@@ -190,11 +190,14 @@ export async function salvarAvaliacaoSerie(show, minhaNota, comentario) {
     const id = serieSalva._id?.$oid ?? serieSalva._id;
     if (!id) throw new Error("O documento salvo não possui um ID válido.");
 
+    // PUT: reenvia o documento inteiro com a nota e o comentário novos.
+    const { _id, _etag, ...documentoAtual } = serieSalva;
     const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
-      method: "PATCH",
+      method: "PUT",
       headers,
-      body: JSON.stringify(avaliacao),
+      body: JSON.stringify({ ...documentoAtual, ...avaliacao }),
     });
+    
     await verificarResposta(response, "A gravação da avaliação");
     return;
   }
