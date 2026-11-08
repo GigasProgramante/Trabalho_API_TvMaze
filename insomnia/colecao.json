@@ -97,7 +97,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\n    \"Drama\",\n    \"Science-Fiction\",\n    \"Thriller\"\n  ],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": {\n    \"nome\": \"CBS\",\n    \"pais\": \"United States\"\n  },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"favorito\": false,\n  \"minhaNota\": null,\n  \"comentario\": \"\",\n  \"criadoEm\": \"2026-10-24T14:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-24T14:00:00.000Z\"\n}"
+          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\n    \"Drama\",\n    \"Science-Fiction\",\n    \"Thriller\"\n  ],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": {\n    \"nome\": \"CBS\",\n    \"pais\": \"United States\"\n  },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"resumo\": \"Uma cidade é isolada do mundo por uma cúpula invisível.\",\n  \"favorito\": false,\n  \"minhaNota\": null,\n  \"comentario\": \"\",\n  \"criadoEm\": \"2026-10-24T14:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-24T14:00:00.000Z\"\n}"
         },
         "url": "{{baseUrl}}/{{banco}}/{{colecao}}"
       }
@@ -156,7 +156,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome (editado)\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\"Drama\", \"Science-Fiction\"],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": { \"nome\": \"CBS\", \"pais\": \"United States\" },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"favorito\": true,\n  \"minhaNota\": 8,\n  \"comentario\": \"Começo bom, final fraco\",\n  \"criadoEm\": \"2026-10-22T19:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-22T20:00:00.000Z\"\n}"
+          "raw": "{\n  \"tvmazeId\": 1,\n  \"nome\": \"Under the Dome (editado)\",\n  \"tipo\": \"Scripted\",\n  \"idioma\": \"English\",\n  \"generos\": [\n    \"Drama\",\n    \"Science-Fiction\"\n  ],\n  \"status\": \"Ended\",\n  \"estreia\": \"2013-06-24\",\n  \"duracaoMin\": 60,\n  \"notaTvmaze\": 6.5,\n  \"emissora\": {\n    \"nome\": \"CBS\",\n    \"pais\": \"United States\"\n  },\n  \"imagem\": \"https://static.tvmaze.com/uploads/images/medium_portrait/81/202627.jpg\",\n  \"resumo\": \"Uma cidade é isolada do mundo por uma cúpula invisível.\",\n  \"favorito\": true,\n  \"minhaNota\": 8,\n  \"comentario\": \"Começo bom, final fraco\",\n  \"criadoEm\": \"2026-10-22T19:00:00.000Z\",\n  \"atualizadoEm\": \"2026-10-22T20:00:00.000Z\"\n}"
         },
         "url": "{{baseUrl}}/{{banco}}/{{colecao}}/{{id}}"
       }
