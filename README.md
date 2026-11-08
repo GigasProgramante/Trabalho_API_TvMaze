@@ -1,5 +1,7 @@
 # Trabalho API TvMaze
 
+**Site publicado:** https://gigasprogramante.github.io/Trabalho_API_TvMaze/
+
 As modificações no arquivo README do projeto serão feitas na main puramente por conveniência, sabemos que não seria o ideal.
 
 ## Papéis definidos
@@ -16,7 +18,7 @@ As modificações no arquivo README do projeto serão feitas na main puramente p
 
 ## Como executar o projeto localmente
 
-Por conta dos containers, isso também é necessário para que o acesso via GitHub Pages funcione corretamente (pelo menos por enquanto).
+O site também está no GitHub Pages (link no início), mas as páginas que usam o banco (séries guardadas, detalhes e painel) só funcionam com o Docker rodando na máquina, porque o MongoDB e o RESTHeart são locais. Por isso, os passos abaixo valem também para quem acessa pelo GitHub Pages.
 
 O frontend, o RESTHeart e o MongoDB são iniciados juntos pelo Docker Compose. Não é necessário instalar ou executar o Live Server nem abrir os arquivos HTML diretamente.
 
@@ -242,6 +244,37 @@ Sequência testada no Insomnia, com a coleção `insomnia/colecao.json`. Ela cri
 | 6 | `DELETE /tvmaze/series/{id}` | 204 No Content |
 | 7 | `GET /tvmaze/series/{id}` | 404 Not Found (série excluída) |
 
+No site, cada método também é usado: **POST** ao guardar uma série, **GET** na listagem, nos detalhes e no painel, **PUT** ao salvar a avaliação (nota e comentário, reenviando o documento inteiro), **PATCH** ao favoritar e **DELETE** ao remover do banco (com confirmação).
+
+### Prints dos testes
+
+**Ambiente: `docker compose ps` com os três serviços (frontend, restheart e mongodb)**
+![docker compose ps](prints/s3-8-compose-3-servicos.png)
+
+**1. POST: inserir série (201)**
+![POST 201](prints/s3-1-post.png)
+
+**2. GET por id (200)**
+![GET por id 200](prints/s3-2-get-id.png)
+
+**3. PUT: substituir documento (200)**
+![PUT 200](prints/s3-3-put.png)
+
+**4. GET depois do PUT (campos alterados)**
+![GET após PUT](prints/s3-4-get-apos-put.png)
+
+**5. PATCH: marcar favorito (200)**
+![PATCH 200](prints/s3-5-patch.png)
+
+**6. DELETE: excluir (204)**
+![DELETE 204](prints/s3-6-delete.png)
+
+**7. GET depois do DELETE (404)**
+![GET 404](prints/s3-7-get-404.png)
+
+**8. PUT feito pelo site ao salvar a avaliação (200)**
+![PUT no site](prints/s3-9-put-no-site.png)
+
 ## Painel de indicadores
 
 Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries guardadas**, para abrir o painel. Ele consulta os documentos salvos no RESTHeart e exibe o total de séries, média das notas TVmaze, quantidade de favoritas, gêneros diferentes, gráficos por gênero e status, ranking das séries mais bem avaliadas e tabela de séries agrupadas por gênero.
@@ -252,7 +285,9 @@ Para apagar um título e todos os seus dados pessoais do MongoDB, use **Remover 
 
 ### Conclusão tirada dos dados
 
-_A preencher: prints do painel e um parágrafo com a conclusão que os dados permitem tirar._
+![Painel de indicadores: indicadores, gráficos, ranking e agrupamento por gênero](prints/painel.png)
+
+Com as 40 séries importadas, o painel mostra que **Drama domina o catálogo**: o gênero aparece em 29 das 40 séries (cerca de 73%), muito à frente de Action (14), Thriller (13) e Horror (12). Como cada série tem vários gêneros, Drama costuma vir combinado com suspense, terror ou ficção científica. A **média das notas TVmaze é alta (7,7)**, e o ranking é bem variado: Death Note e Person of Interest empatam no topo com 8,8, seguidas de Fargo e Vikings (8,6) e Supernatural (8,4), ou seja, as séries mais bem avaliadas não se concentram em um só gênero. Por fim, **quase todas as séries já foram encerradas** (status *Ended*). Isso acontece porque a importação traz a primeira página do catálogo da TVmaze, com as séries mais antigas cadastradas na API. Para analisar lançamentos recentes, o próximo passo seria importar outras páginas (`/shows?page=N`).
 
 ## Uso de IA
 
