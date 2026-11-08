@@ -8,6 +8,12 @@ As modificações no arquivo README do projeto serão feitas na main puramente p
 - Luis Ronei: API (Requisições HTTP e Insomnia)
 - Henrique Mengarda: Interface (Frontend e gráficos)
 
+## Tema e API de origem
+
+- **Tema:** Séries de TV
+- **API de origem:** [TVmaze](https://www.tvmaze.com/api), gratuita e sem chave. É usada só para leitura (GET): `https://api.tvmaze.com/shows?page=0` na importação e `https://api.tvmaze.com/search/shows?q={nome}` na busca do site.
+- **Banco NoSQL:** MongoDB exposto como API REST pelo RESTHeart, os dois em Docker. Banco `tvmaze`, coleção `series`.
+
 ## Como inicializar o MongoDB + RESTHeart via Docker-compose
 
 ### Como iniciar o Banco e o RESTHeart
@@ -21,6 +27,19 @@ Alternativamente, para que o comando seja executado em segundo plano, permitindo
 >docker compose up -d
 
 **Com isso, o banco já está funcionando e exposto via RESTHeart na porta 8080, tendo como link base da API: http://localhost:8080/**
+
+### Como conferir, parar e apagar o ambiente
+
+```bash
+docker compose ps                  # mongodb e restheart devem aparecer como "Up"
+docker compose logs -f restheart   # ver erros da API
+docker compose stop                # parar os containers (mantém os dados)
+docker compose start               # ligar de novo
+docker compose down                # parar e remover os containers
+docker compose down -v             # parar e APAGAR todos os dados do banco
+```
+
+Depois de um `down -v` (ou na primeira vez), rode a importação de novo: `node js/importar.mjs`.
 
 ## Como enviar requisições ao banco
 
@@ -44,11 +63,11 @@ Agora, clique em **Headers**, e adicione um novo cabeçalho nomeado **Content-ty
 
 ### Enviando uma requisição
 
-Para testar, envie essa requisição para criar uma coleção:
+Para testar, envie essa requisição para criar o banco do projeto:
 
 >**Método:** PUT
 
->**Link:** http://localhost:8080/colecao
+>**Link:** http://localhost:8080/tvmaze
 
 E então, clique em **Send**, se tudo estiver correto, na direita haverá o retorno **201**, indicando que o recurso foi criado, portanto, também indicando que o banco está funcionando corretamente.
 
@@ -90,6 +109,12 @@ Cada série é gravada como um documento na coleção `series`, dentro do banco 
 | `emissora` | objeto embutido | TVmaze (`network` ou `webChannel`) |
 | `resumo` | texto | TVmaze (`summary`, sem tags HTML) |
 | `favorito`, `minhaNota`, `comentario`, `criadoEm`, `atualizadoEm` | campos do grupo | não existem na API |
+
+### Embutido x referenciado
+
+- **Embutidos:** `generos` (lista) e `emissora` (objeto) ficam dentro do documento da série. São dados pequenos, sempre lidos junto com a série (nos cards, na busca, no filtro por gênero e no agrupamento por emissora) e quase nunca mudam. Embutindo, uma única requisição GET traz tudo, sem precisar juntar coleções.
+- **Referenciado:** `tvmazeId` é uma referência à série na API de origem. Elenco e episódios não são copiados para o banco, porque podem ser muitos e crescer com o tempo. Quando precisamos deles (na página de detalhes), buscamos na TVmaze pelo `tvmazeId`.
+- **Campos do grupo:** `favorito`, `minhaNota`, `comentario`, `criadoEm` e `atualizadoEm` não existem na TVmaze e são alterados pelo PUT e pelo PATCH.
 
 ## Testando o banco com o JSON base
 
@@ -186,3 +211,28 @@ Base do banco: `http://localhost:8080/tvmaze/series`, com autenticação Basic `
 **Atenção:** o RESTHeart devolve no máximo 100 documentos por página por padrão. Para listar tudo, use `?pagesize=1000` (ou `&page=2`, `&page=3`...).
 
 Todas essas requisições estão na coleção [`insomnia/colecao.json`](insomnia/colecao.json).
+
+## Testes de todos os métodos HTTP
+
+Sequência testada no Insomnia, com a coleção `insomnia/colecao.json`. Ela cria uma série de teste e a exclui no final, então o banco não fica com duplicatas:
+
+| Ordem | Requisição | Resultado |
+| --- | --- | --- |
+| 1 | `POST /tvmaze/series` | 201 Created (id no `Location`) |
+| 2 | `GET /tvmaze/series/{id}` | 200 OK |
+| 3 | `PUT /tvmaze/series/{id}` | 200 OK |
+| 4 | `GET /tvmaze/series/{id}` | 200 OK, com os campos alterados pelo PUT |
+| 5 | `PATCH /tvmaze/series/{id}` | 200 OK |
+| 6 | `DELETE /tvmaze/series/{id}` | 204 No Content |
+| 7 | `GET /tvmaze/series/{id}` | 404 Not Found (série excluída) |
+
+## Painel e conclusão
+
+_A preencher: prints do painel (indicadores, gráficos, ranking e agrupamento) e um parágrafo com a conclusão tirada dos dados._
+
+## Uso de IA
+
+Conforme pedido no enunciado, registramos onde ferramentas de IA foram usadas:
+
+- **Claude (Anthropic):** rascunho do JSON de teste (`testes/serie-exemplo.json`), da coleção do Insomnia (`insomnia/colecao.json`), do script de importação (`js/importar.mjs`) e de partes deste README (modelo do documento, testes, importação e endpoints). Todo o código foi revisado e testado pelo grupo.
+- _Demais integrantes: acrescentem aqui onde usaram IA._
