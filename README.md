@@ -234,6 +234,8 @@ Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries
 
 Na página de detalhes de uma série, a seção **Minha avaliação** permite escolher uma nota de 0 a 10, em passos de 0,5, e escrever um comentário de até 2.000 caracteres. **Salvar avaliação** grava os campos `minhaNota`, `comentario` e `atualizadoEm` no documento do MongoDB; os valores já existentes são carregados para edição.
 
+Para apagar um título e todos os seus dados pessoais do MongoDB, use **Remover do banco** no card da página de séries guardadas ou nos detalhes da série e confirme a ação. Essa exclusão remove apenas o documento local; a série continua existindo na TVmaze.
+
 ### Conclusão tirada dos dados
 
 _A preencher: prints do painel e um parágrafo com a conclusão que os dados permitem tirar._

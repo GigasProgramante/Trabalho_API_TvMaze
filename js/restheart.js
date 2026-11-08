@@ -86,6 +86,22 @@ export async function buscarSerieSalva(tvmazeId) {
   return serie ?? null;
 }
 
+// Exclui o documento MongoDB completo correspondente ao ID da TVmaze.
+export async function excluirSerieSalva(tvmazeId) {
+  const serie = await buscarSerieSalva(tvmazeId);
+  if (!serie) return false;
+
+  const id = serie._id?.$oid ?? serie._id;
+  if (!id) throw new Error("O documento salvo não possui um ID válido.");
+
+  const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers,
+  });
+  await verificarResposta(response, "A exclusão da série");
+  return true;
+}
+
 // Evita duplicatas e cadastra uma nova série na coleção.
 export async function guardarSerie(show) {
   if (await buscarSerieSalva(show.id)) {

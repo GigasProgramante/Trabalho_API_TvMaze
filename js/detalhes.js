@@ -1,6 +1,7 @@
 import {
   alternarFavorito,
   buscarSerieSalva,
+  excluirSerieSalva,
   salvarAvaliacaoSerie,
 } from "./restheart.js";
 
@@ -108,6 +109,8 @@ if (id) {
 
         try {
           show.favorito = await alternarFavorito(show);
+          serieSalva = await buscarSerieSalva(show.id);
+          botaoExcluir.disabled = !serieSalva;
           botaoFavoritar.textContent = show.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
           botaoFavoritar.setAttribute("aria-pressed", String(show.favorito));
           botaoFavoritar.disabled = false;
@@ -123,6 +126,35 @@ if (id) {
         }
       });
       container.append(botaoFavoritar);
+
+      // Remove do MongoDB todo o documento e os dados pessoais da série.
+      const botaoExcluir = document.createElement("button");
+      botaoExcluir.type = "button";
+      botaoExcluir.className = "btn btn-outline-danger align-self-start mb-4";
+      botaoExcluir.textContent = "Remover do banco";
+      botaoExcluir.disabled = !serieSalva;
+      botaoExcluir.addEventListener("click", async () => {
+        if (!window.confirm(`Remover "${show.name}" e todos os seus dados do banco?`)) {
+          return;
+        }
+
+        botaoExcluir.disabled = true;
+        botaoExcluir.textContent = "Removendo...";
+        try {
+          await excluirSerieSalva(show.id);
+          window.location.href = "salvas.html";
+        } catch (error) {
+          console.error("Erro ao excluir série do banco:", error);
+          botaoExcluir.disabled = false;
+          botaoExcluir.textContent = "Remover do banco";
+          const aviso = document.createElement("p");
+          aviso.className = "alert alert-danger mb-4";
+          aviso.setAttribute("role", "alert");
+          aviso.textContent = error.message;
+          botaoExcluir.after(aviso);
+        }
+      });
+      container.append(botaoExcluir);
 
       // Carrega os valores existentes para que possam ser consultados ou editados.
       notaSelect.value = serieSalva?.minhaNota == null ? "" : String(serieSalva.minhaNota);
@@ -147,6 +179,7 @@ if (id) {
         try {
           await salvarAvaliacaoSerie(show, notaInformada, comentario);
           serieSalva = await buscarSerieSalva(show.id);
+          botaoExcluir.disabled = !serieSalva;
           avaliacaoStatus.className = "alert alert-success mt-3 mb-0";
           avaliacaoStatus.textContent = "Sua avaliação foi salva.";
         } catch (error) {
