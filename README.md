@@ -14,34 +14,46 @@ As modificações no arquivo README do projeto serão feitas na main puramente p
 - **API de origem:** [TVmaze](https://www.tvmaze.com/api), gratuita e sem chave. É usada só para leitura (GET): `https://api.tvmaze.com/shows?page=0` na importação e `https://api.tvmaze.com/search/shows?q={nome}` na busca do site.
 - **Banco NoSQL:** MongoDB exposto como API REST pelo RESTHeart, os dois em Docker. Banco `tvmaze`, coleção `series`.
 
-## Como inicializar o MongoDB + RESTHeart via Docker-compose
+## Como executar o projeto localmente
 
-### Como iniciar o Banco e o RESTHeart
+O frontend, o RESTHeart e o MongoDB são iniciados juntos pelo Docker Compose. Não é necessário instalar ou executar o Live Server nem abrir os arquivos HTML diretamente.
 
-Após clonar o repositório na sua máquina, e certificar que a engine do docker está ativa na máquina, abra um terminal no projeto e execute o seguinte comando:
+1. Inicie o Docker Desktop e aguarde a engine ficar disponível.
+2. No terminal, acesse a pasta raiz do repositório e suba os três serviços:
 
->docker compose up
+```bash
+docker compose up -d
+```
 
-Alternativamente, para que o comando seja executado em segundo plano, permitindo que o terminal seja fechado sem encerrar o serviço, execute:
+3. Confira se `frontend`, `restheart` e `mongodb` estão em execução:
 
->docker compose up -d
+```bash
+docker compose ps
+```
 
-**Com isso, os serviços estarão disponíveis:** frontend pelo Nginx em `http://localhost:8081/` e API RESTHeart em `http://localhost:8080/`.
+4. Abra **http://localhost:8081/** no navegador. Essa página é servida pelo Nginx no container `frontend`; as rotas também estão disponíveis em `/salvas.html`, `/painel.html` e `/detalhes.html?id={id}`.
 
-O Nginx serve os arquivos do frontend e configura o tipo MIME dos módulos JavaScript, necessário para que o navegador carregue as funções da aplicação.
+O RESTHeart fica disponível em **http://localhost:8080/**. Na primeira execução, o site cria o banco e a coleção quando necessário. Para importar séries da TVmaze, execute na raiz do repositório, com o Docker em execução:
+
+```bash
+node js/importar.mjs
+```
+
+Não use `docker compose down -v` para apenas reiniciar o site: esse comando também apaga o volume de dados do MongoDB.
 
 ### Como conferir, parar e apagar o ambiente
 
 ```bash
-docker compose ps                  # mongodb e restheart devem aparecer como "Up"
-docker compose logs -f restheart   # ver erros da API
-docker compose stop                # parar os containers (mantém os dados)
-docker compose start               # ligar de novo
-docker compose down                # parar e remover os containers
-docker compose down -v             # parar e APAGAR todos os dados do banco
+docker compose ps                    # conferir frontend, restheart e mongodb
+docker compose logs -f frontend      # ver logs do Nginx
+docker compose logs -f restheart     # ver logs da API
+docker compose stop                  # parar os containers (mantém os dados)
+docker compose start                 # iniciar de novo
+docker compose down                  # remover os containers (mantém o volume)
+docker compose down -v               # remover containers e APAGAR o volume do MongoDB
 ```
 
-Depois de um `down -v` (ou na primeira vez), a coleção é inicializada pelo site. Para popular o catálogo novamente, rode `node js/importar.mjs`.
+Depois de `docker compose down -v`, suba os serviços novamente com `docker compose up -d` e rode `node js/importar.mjs` para recriar a coleção e popular o banco.
 
 ## Como enviar requisições ao banco
 
@@ -65,13 +77,13 @@ Agora, clique em **Headers**, e adicione um novo cabeçalho nomeado **Content-ty
 
 ### Enviando uma requisição
 
-Para testar, envie essa requisição para criar o banco do projeto:
+Para testar, envie essa requisição para criar ou garantir o banco do projeto:
 
 >**Método:** PUT
 
 >**Link:** http://localhost:8080/tvmaze
 
-E então, clique em **Send**, se tudo estiver correto, na direita haverá o retorno **201**, indicando que o recurso foi criado, portanto, também indicando que o banco está funcionando corretamente.
+Clique em **Send**. Um retorno **201** indica que o banco foi criado; se já existir, o RESTHeart pode retornar **200**.
 
 
 >Tenha em mente que esse teste não é necessário caso você pretenda executar o teste completo descrito nas próximas seções.
@@ -244,5 +256,5 @@ _A preencher: prints do painel e um parágrafo com a conclusão que os dados per
 
 Conforme pedido no enunciado, registramos onde ferramentas de IA foram usadas:
 
-- **Claude (Anthropic):** rascunho do JSON de teste (`testes/serie-exemplo.json`), da coleção do Insomnia (`insomnia/colecao.json`), do script de importação (`js/importar.mjs`) e de partes deste README (modelo do documento, testes, importação e endpoints). Todo o código foi revisado e testado pelo grupo.
-- _Demais integrantes: acrescentem aqui onde usaram IA._
+- **No geral:** rascunho do JSON de teste (`testes/serie-exemplo.json`), da coleção do Insomnia (`insomnia/colecao.json`), do script de importação (`js/importar.mjs`) e de partes deste README (modelo do documento, testes, importação e endpoints). Todo o código foi revisado e testado pelo grupo.
+- Auxilio foi utilizado no projeto como um todo visto a complexidade do projeto somado a nossa ingenuidade. Porém ela foi mais necessária ao fim do desenvolvimento para analisar possiveis erros, revisar o projeto todo, adicionar comentário que facilitam a leitura do código, a implementação do front via nginx no docker, que teve alguns problemas, e por fim, auxiliar em questões de hospedagem do site, que ainda estamos analisando
