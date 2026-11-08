@@ -186,3 +186,7 @@ Base do banco: `http://localhost:8080/tvmaze/series`, com autenticação Basic `
 **Atenção:** o RESTHeart devolve no máximo 100 documentos por página por padrão. Para listar tudo, use `?pagesize=1000` (ou `&page=2`, `&page=3`...).
 
 Todas essas requisições estão na coleção [`insomnia/colecao.json`](insomnia/colecao.json).
+
+## Painel de indicadores
+
+Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries guardadas**, para abrir o painel. Ele consulta os documentos salvos no RESTHeart e exibe o total de séries, média das notas TVmaze, quantidade de favoritas, gêneros diferentes, gráficos por gênero e status, ranking das séries mais bem avaliadas e tabela de séries agrupadas por gênero.

@@ -64,6 +64,7 @@ async function idsJaSalvos() {
   return new Set(docs.map((d) => d.tvmazeId));
 }
 
+// Coordena a leitura da origem, evita duplicatas e grava os novos documentos.
 async function main() {
   console.log(`Banco: ${COLECAO}`);
   await garantirBancoEColecao();
@@ -79,6 +80,7 @@ async function main() {
   let pulados = 0;
   let erros = 0;
 
+  // Processa somente a quantidade solicitada e contabiliza cada resultado.
   for (const show of shows.slice(0, QUANTIDADE)) {
     if (existentes.has(show.id)) {
       pulados++;

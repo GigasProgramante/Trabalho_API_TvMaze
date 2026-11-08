@@ -6,6 +6,7 @@
     <title>Séries guardadas | TVMaze Explorer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Carrega a listagem salva no banco e habilita o filtro local. -->
     <script src="js/salvas.js" type="module"></script>
 </head>
 <body>
@@ -15,9 +16,13 @@
                 <h1>Séries guardadas</h1>
                 <p>Seu catálogo armazenado no banco de dados</p>
             </div>
-            <a class="btn btn-dark" href="index.html">Buscar séries</a>
+            <nav class="d-flex flex-wrap gap-2" aria-label="Navegação principal">
+                <a class="btn btn-dark" href="index.html">Buscar séries</a>
+                <a class="btn btn-outline-dark" href="painel.html">Painel de indicadores</a>
+            </nav>
         </header>
 
+        <!-- Busca local por nome, status, idioma ou gênero. -->
         <nav class="mb-4">
             <form id="search-form" class="input-group search-form">
                 <input
@@ -31,6 +36,7 @@
             </form>
         </nav>
 
+        <!-- Mensagens da consulta e espaço para os cards vindos do RESTHeart. -->
         <p id="status" class="alert alert-info status-message" aria-live="polite">Carregando séries do banco...</p>
         <div id="series" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4"></div>
     </main>

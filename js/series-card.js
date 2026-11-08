@@ -1,3 +1,4 @@
+// Cria um card reutilizável para resultados da busca ou séries já salvas.
 export function criarCardSerie(serie, { aoGuardar, mostrarDetalhes = true } = {}) {
   const coluna = document.createElement("div");
   coluna.className = "col";
@@ -32,6 +33,7 @@ export function criarCardSerie(serie, { aoGuardar, mostrarDetalhes = true } = {}
   botoes.className = "d-grid gap-2 mt-auto";
   corpo.append(botoes);
 
+  // O botão de cadastro só aparece quando a tela fornece a ação correspondente.
   if (aoGuardar) {
     const botaoGuardar = document.createElement("button");
     botaoGuardar.textContent = "Guardar no banco";
@@ -40,6 +42,7 @@ export function criarCardSerie(serie, { aoGuardar, mostrarDetalhes = true } = {}
     botoes.append(botaoGuardar);
   }
 
+  // O detalhe usa o ID da TVmaze para buscar informações completas e elenco.
   if (mostrarDetalhes && serie.tvmazeId) {
     const botaoDetalhes = document.createElement("button");
     botaoDetalhes.textContent = "Ver detalhes";
