@@ -16,6 +16,8 @@ As modificações no arquivo README do projeto serão feitas na main puramente p
 
 ## Como executar o projeto localmente
 
+Por conta dos containers, isso também é necessário para que o acesso via GitHub Pages funcione corretamente (pelo menos por enquanto).
+
 O frontend, o RESTHeart e o MongoDB são iniciados juntos pelo Docker Compose. Não é necessário instalar ou executar o Live Server nem abrir os arquivos HTML diretamente.
 
 1. Inicie o Docker Desktop e aguarde a engine ficar disponível.
