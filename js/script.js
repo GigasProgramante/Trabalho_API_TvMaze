@@ -3,13 +3,13 @@ import { criarCardSerie } from "./series-card.js";
 
 const tvMazeUrl = "https://api.tvmaze.com";
 
-// Busca no HTML os elementos que serão usados pelo JavaScript.
+// Referências aos controles usados na busca e na exibição dos resultados.
 const form = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
 const status = document.querySelector("#status");
 const seriesContainer = document.querySelector("#series");
 
-// "submit" acontece quando a pessoa clica em Buscar ou pressiona Enter no campo.
+// Busca séries na TVmaze e cria um card com a opção de salvar cada resultado.
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -25,6 +25,7 @@ form.addEventListener("submit", async (event) => {
   seriesContainer.replaceChildren();
 
   try {
+    // Codifica o termo para que espaços e caracteres especiais sejam válidos na URL.
     const response = await fetch(
       `${tvMazeUrl}/search/shows?q=${encodeURIComponent(searchTerm)}`
     );
@@ -35,6 +36,7 @@ form.addEventListener("submit", async (event) => {
 
     const results = await response.json();
 
+    // Converte cada resultado ao modelo local e configura sua ação de cadastro.
     results.forEach(({ show }) => {
       const serie = criarDocumento(show);
       const card = criarCardSerie(serie, {
@@ -42,6 +44,7 @@ form.addEventListener("submit", async (event) => {
           botao.disabled = true;
           botao.textContent = "Guardando...";
 
+          // Informa o resultado do cadastro e reabilita o botão em caso de erro.
           try {
             await guardarSerie(show);
             botao.textContent = "Guardada com sucesso";

@@ -2,6 +2,7 @@
 # Runs RESTHeart with MongoDB in replica set mode
 name: restheart
 
+# Sobe o banco NoSQL e a API REST que o frontend utiliza.
 services:
   # RESTHeart API server
   restheart:

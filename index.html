@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Bibliotecas de interface e módulo responsável pela busca na TVmaze. -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js" type="module"></script>
 </head>
@@ -18,10 +19,13 @@
                 <h1>TVMaze Explorer</h1>
                 <p>Catálogo de Séries & Integração RESTHeart NoSQL</p>
             </div>
-            <a class="btn btn-dark" href="salvas.html">Séries guardadas</a>
+            <nav class="d-flex flex-wrap gap-2" aria-label="Navegação principal">
+                <a class="btn btn-dark" href="salvas.html">Séries guardadas</a>
+                <a class="btn btn-outline-dark" href="painel.html">Painel de indicadores</a>
+            </nav>
         </header>
 
-        <!-- Barra de Busca -->
+        <!-- Formulário de busca de séries por nome na API pública. -->
         <nav class="mb-4">
             <form id="search-form" class="input-group search-form">
                 <input
@@ -36,10 +40,10 @@
             </form>
         </nav>
 
-        <!-- Mensagem de Status -->
+        <!-- Retorno da busca, cadastro ou erros para a pessoa usuária. -->
         <p id="status" class="alert alert-info status-message" aria-live="polite"></p>
         
-        <!-- Grid de Cards das Séries -->
+        <!-- Área preenchida com os cards de resultados pelo script.js. -->
         <div id="series" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4"></div>
     </main>
 </body>
