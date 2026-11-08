@@ -1,4 +1,8 @@
-import { alternarFavoritoDocumento, listarSeries } from "./restheart.js";
+import {
+  alternarFavoritoDocumento,
+  excluirSerieSalva,
+  listarSeries,
+} from "./restheart.js";
 import { criarCardSerie } from "./series-card.js";
 
 const form = document.querySelector("#search-form");
@@ -42,6 +46,27 @@ function renderizarSeries(filtro = "") {
             console.error("Erro ao favoritar série salva:", error);
             botao.disabled = false;
             botao.textContent = serie.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+            status.textContent = error.message;
+          }
+        },
+        aoExcluir: async (botao) => {
+          if (!window.confirm(`Remover "${serie.nome}" e todos os seus dados do banco?`)) {
+            return;
+          }
+
+          botao.disabled = true;
+          botao.textContent = "Removendo...";
+          try {
+            await excluirSerieSalva(serie.tvmazeId);
+            seriesSalvas = seriesSalvas.filter(
+              (item) => item.tvmazeId !== serie.tvmazeId
+            );
+            renderizarSeries(input.value);
+            status.textContent = `${serie.nome} e todos os seus dados foram removidos do banco.`;
+          } catch (error) {
+            console.error("Erro ao excluir série do banco:", error);
+            botao.disabled = false;
+            botao.textContent = "Remover do banco";
             status.textContent = error.message;
           }
         },

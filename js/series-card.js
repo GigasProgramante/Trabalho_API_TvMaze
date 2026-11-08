@@ -4,6 +4,7 @@ export function criarCardSerie(
   {
     aoGuardar,
     aoFavoritar,
+    aoExcluir,
     guardada = false,
     favorita = serie.favorito === true,
     mostrarDetalhes = true,
@@ -59,6 +60,15 @@ export function criarCardSerie(
     botaoFavoritar.className = "btn btn-outline-dark favoritar";
     botaoFavoritar.addEventListener("click", () => aoFavoritar(botaoFavoritar));
     botoes.append(botaoFavoritar);
+  }
+
+  // Remove o documento completo da série quando a tela oferece essa ação.
+  if (aoExcluir) {
+    const botaoExcluir = document.createElement("button");
+    botaoExcluir.textContent = "Remover do banco";
+    botaoExcluir.className = "btn btn-outline-danger excluir";
+    botaoExcluir.addEventListener("click", () => aoExcluir(botaoExcluir));
+    botoes.append(botaoExcluir);
   }
 
   // O detalhe usa o ID da TVmaze para buscar informações completas e elenco.

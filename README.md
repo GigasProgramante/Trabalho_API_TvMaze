@@ -26,7 +26,9 @@ Alternativamente, para que o comando seja executado em segundo plano, permitindo
 
 >docker compose up -d
 
-**Com isso, o banco já está funcionando e exposto via RESTHeart na porta 8080, tendo como link base da API: http://localhost:8080/**
+**Com isso, os serviços estarão disponíveis:** frontend pelo Nginx em `http://localhost:8081/` e API RESTHeart em `http://localhost:8080/`.
+
+O Nginx serve os arquivos do frontend e configura o tipo MIME dos módulos JavaScript, necessário para que o navegador carregue as funções da aplicação.
 
 ### Como conferir, parar e apagar o ambiente
 
@@ -39,7 +41,7 @@ docker compose down                # parar e remover os containers
 docker compose down -v             # parar e APAGAR todos os dados do banco
 ```
 
-Depois de um `down -v` (ou na primeira vez), rode a importação de novo: `node js/importar.mjs`.
+Depois de um `down -v` (ou na primeira vez), a coleção é inicializada pelo site. Para popular o catálogo novamente, rode `node js/importar.mjs`.
 
 ## Como enviar requisições ao banco
 
@@ -229,6 +231,10 @@ Sequência testada no Insomnia, com a coleção `insomnia/colecao.json`. Ela cri
 ## Painel de indicadores
 
 Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries guardadas**, para abrir o painel. Ele consulta os documentos salvos no RESTHeart e exibe o total de séries, média das notas TVmaze, quantidade de favoritas, gêneros diferentes, gráficos por gênero e status, ranking das séries mais bem avaliadas e tabela de séries agrupadas por gênero.
+
+Na página de detalhes de uma série, a seção **Minha avaliação** permite escolher uma nota de 0 a 10, em passos de 0,5, e escrever um comentário de até 2.000 caracteres. **Salvar avaliação** grava os campos `minhaNota`, `comentario` e `atualizadoEm` no documento do MongoDB; os valores já existentes são carregados para edição.
+
+Para apagar um título e todos os seus dados pessoais do MongoDB, use **Remover do banco** no card da página de séries guardadas ou nos detalhes da série e confirme a ação. Essa exclusão remove apenas o documento local; a série continua existindo na TVmaze.
 
 ### Conclusão tirada dos dados
 

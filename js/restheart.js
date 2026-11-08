@@ -1,4 +1,4 @@
-import { garantir } from "./restheart-api.mjs";
+import { garantir } from "./restheart-api.mjs?v=2";
 
 export const colecaoSeries = "http://localhost:8080/tvmaze/series";
 const banco = colecaoSeries.slice(0, colecaoSeries.lastIndexOf("/"));
@@ -62,7 +62,11 @@ async function verificarResposta(response, acao) {
 
 // Lê os documentos salvos no banco para a listagem e o painel.
 export async function listarSeries() {
-  const response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  let response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  if (response.status === 404) {
+    await garantirBancoEColecao();
+    response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  }
   await verificarResposta(response, "A consulta ao banco");
   return response.json();
 }
@@ -80,6 +84,22 @@ export async function buscarSerieSalva(tvmazeId) {
 
   const [serie] = await response.json();
   return serie ?? null;
+}
+
+// Exclui o documento MongoDB completo correspondente ao ID da TVmaze.
+export async function excluirSerieSalva(tvmazeId) {
+  const serie = await buscarSerieSalva(tvmazeId);
+  if (!serie) return false;
+
+  const id = serie._id?.$oid ?? serie._id;
+  if (!id) throw new Error("O documento salvo não possui um ID válido.");
+
+  const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers,
+  });
+  await verificarResposta(response, "A exclusão da série");
+  return true;
 }
 
 // Evita duplicatas e cadastra uma nova série na coleção.
@@ -148,4 +168,42 @@ export async function alternarFavoritoDocumento(serie) {
   });
   await verificarResposta(response, "A atualização do favorito");
   return favorito;
+}
+
+// Salva a avaliação pessoal e o comentário, criando o documento se necessário.
+export async function salvarAvaliacaoSerie(show, minhaNota, comentario) {
+  if (
+    minhaNota !== null
+    && (!Number.isFinite(minhaNota) || minhaNota < 0 || minhaNota > 10 || minhaNota * 2 % 1 !== 0)
+  ) {
+    throw new Error("A nota deve estar entre 0 e 10, em passos de 0,5.");
+  }
+
+  const serieSalva = await buscarSerieSalva(show.id);
+  const avaliacao = {
+    minhaNota,
+    comentario,
+    atualizadoEm: new Date().toISOString(),
+  };
+
+  if (serieSalva) {
+    const id = serieSalva._id?.$oid ?? serieSalva._id;
+    if (!id) throw new Error("O documento salvo não possui um ID válido.");
+
+    const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify(avaliacao),
+    });
+    await verificarResposta(response, "A gravação da avaliação");
+    return;
+  }
+
+  const documento = { ...criarDocumento(show), ...avaliacao };
+  const response = await fetch(colecaoSeries, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(documento),
+  });
+  await verificarResposta(response, "O cadastro da série avaliada");
 }
