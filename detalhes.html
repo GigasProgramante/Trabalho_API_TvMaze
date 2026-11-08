@@ -24,6 +24,33 @@
         <section id="detalhes" class="card series-details p-4">
             <p id="status" class="alert alert-info mb-0" role="status">A carregar detalhes...</p>
         </section>
+
+        <!-- Formulário para gravar a nota pessoal e o comentário no MongoDB. -->
+        <section id="avaliacao" class="card series-details p-4 mt-4" aria-labelledby="avaliacao-titulo" hidden>
+            <h2 id="avaliacao-titulo" class="h4 mb-3">Minha avaliação</h2>
+            <form id="form-avaliacao">
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="minha-nota">Minha nota</label>
+                    <select class="form-select" id="minha-nota" name="minhaNota">
+                        <option value="">Sem nota</option>
+                    </select>
+                    <div class="form-text">Escolha uma nota de 0 a 10, em passos de 0,5.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="comentario">Comentário</label>
+                    <textarea
+                        class="form-control"
+                        id="comentario"
+                        name="comentario"
+                        rows="4"
+                        maxlength="2000"
+                        placeholder="Escreva sua opinião sobre a série..."
+                    ></textarea>
+                </div>
+                <button class="btn btn-dark" id="salvar-avaliacao" type="submit">Salvar avaliação</button>
+                <p id="status-avaliacao" class="mt-3 mb-0" role="status" aria-live="polite"></p>
+            </form>
+        </section>
     </main>
 </body>
 </html>

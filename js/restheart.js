@@ -153,3 +153,41 @@ export async function alternarFavoritoDocumento(serie) {
   await verificarResposta(response, "A atualização do favorito");
   return favorito;
 }
+
+// Salva a avaliação pessoal e o comentário, criando o documento se necessário.
+export async function salvarAvaliacaoSerie(show, minhaNota, comentario) {
+  if (
+    minhaNota !== null
+    && (!Number.isFinite(minhaNota) || minhaNota < 0 || minhaNota > 10 || minhaNota * 2 % 1 !== 0)
+  ) {
+    throw new Error("A nota deve estar entre 0 e 10, em passos de 0,5.");
+  }
+
+  const serieSalva = await buscarSerieSalva(show.id);
+  const avaliacao = {
+    minhaNota,
+    comentario,
+    atualizadoEm: new Date().toISOString(),
+  };
+
+  if (serieSalva) {
+    const id = serieSalva._id?.$oid ?? serieSalva._id;
+    if (!id) throw new Error("O documento salvo não possui um ID válido.");
+
+    const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify(avaliacao),
+    });
+    await verificarResposta(response, "A gravação da avaliação");
+    return;
+  }
+
+  const documento = { ...criarDocumento(show), ...avaliacao };
+  const response = await fetch(colecaoSeries, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(documento),
+  });
+  await verificarResposta(response, "O cadastro da série avaliada");
+}

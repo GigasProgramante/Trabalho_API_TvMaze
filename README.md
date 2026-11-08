@@ -232,6 +232,8 @@ Sequência testada no Insomnia, com a coleção `insomnia/colecao.json`. Ela cri
 
 Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries guardadas**, para abrir o painel. Ele consulta os documentos salvos no RESTHeart e exibe o total de séries, média das notas TVmaze, quantidade de favoritas, gêneros diferentes, gráficos por gênero e status, ranking das séries mais bem avaliadas e tabela de séries agrupadas por gênero.
 
+Na página de detalhes de uma série, a seção **Minha avaliação** permite escolher uma nota de 0 a 10, em passos de 0,5, e escrever um comentário de até 2.000 caracteres. **Salvar avaliação** grava os campos `minhaNota`, `comentario` e `atualizadoEm` no documento do MongoDB; os valores já existentes são carregados para edição.
+
 ### Conclusão tirada dos dados
 
 _A preencher: prints do painel e um parágrafo com a conclusão que os dados permitem tirar._

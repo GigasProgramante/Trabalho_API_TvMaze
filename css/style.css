@@ -155,6 +155,16 @@ body {
     line-height: 1.6;
 }
 
+.series-details[hidden] {
+    display: none;
+}
+
+.series-details .form-select {
+    border: 2px solid var(--color-card-shadow);
+    background-color: var(--color-input-background);
+    color: var(--color-text);
+}
+
 .details-cast .list-group-item {
     border-color: rgb(27 22 15 / 20%);
     background-color: transparent;

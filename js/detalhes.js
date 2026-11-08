@@ -1,9 +1,30 @@
-import { alternarFavorito, buscarSerieSalva } from "./restheart.js";
+import {
+  alternarFavorito,
+  buscarSerieSalva,
+  salvarAvaliacaoSerie,
+} from "./restheart.js";
 
 // Lê o ID da série enviado pela tela de listagem na query string.
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const container = document.querySelector("#detalhes");
+const avaliacaoSection = document.querySelector("#avaliacao");
+const avaliacaoForm = document.querySelector("#form-avaliacao");
+const notaSelect = document.querySelector("#minha-nota");
+const comentarioInput = document.querySelector("#comentario");
+const avaliacaoStatus = document.querySelector("#status-avaliacao");
+const salvarAvaliacaoButton = document.querySelector("#salvar-avaliacao");
+
+// Preenche a lista de notas em incrementos de meio ponto, incluindo os extremos.
+for (let nota = 0; nota <= 10; nota += 0.5) {
+  const option = document.createElement("option");
+  option.value = String(nota);
+  option.textContent = nota.toLocaleString("pt-BR", {
+    minimumFractionDigits: Number.isInteger(nota) ? 0 : 1,
+    maximumFractionDigits: 1,
+  });
+  notaSelect.append(option);
+}
 
 // Substitui o conteúdo da página por uma mensagem de erro acessível.
 function mostrarErro(mensagem) {
@@ -22,6 +43,7 @@ if (id) {
       return response.json();
     })
     .then(async (show) => {
+      let serieSalva = null;
       container.replaceChildren();
 
       if (show.image?.original || show.image?.medium) {
@@ -71,7 +93,8 @@ if (id) {
       botaoFavoritar.textContent = "Verificando favorito...";
       botaoFavoritar.disabled = true;
       try {
-        show.favorito = (await buscarSerieSalva(show.id))?.favorito === true;
+        serieSalva = await buscarSerieSalva(show.id);
+        show.favorito = serieSalva?.favorito === true;
         botaoFavoritar.textContent = show.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
         botaoFavoritar.disabled = false;
       } catch (error) {
@@ -100,6 +123,40 @@ if (id) {
         }
       });
       container.append(botaoFavoritar);
+
+      // Carrega os valores existentes para que possam ser consultados ou editados.
+      notaSelect.value = serieSalva?.minhaNota == null ? "" : String(serieSalva.minhaNota);
+      comentarioInput.value = serieSalva?.comentario ?? "";
+      avaliacaoSection.hidden = false;
+
+      // Persiste nota e comentário no documento da série ao enviar o formulário.
+      avaliacaoForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const notaInformada = notaSelect.value === "" ? null : Number(notaSelect.value);
+        const comentario = comentarioInput.value.trim();
+
+        if (notaInformada === null && comentario === "") {
+          avaliacaoStatus.className = "alert alert-warning mt-3 mb-0";
+          avaliacaoStatus.textContent = "Informe uma nota ou escreva um comentário.";
+          return;
+        }
+
+        salvarAvaliacaoButton.disabled = true;
+        avaliacaoStatus.className = "mt-3 mb-0";
+        avaliacaoStatus.textContent = "Salvando avaliação...";
+        try {
+          await salvarAvaliacaoSerie(show, notaInformada, comentario);
+          serieSalva = await buscarSerieSalva(show.id);
+          avaliacaoStatus.className = "alert alert-success mt-3 mb-0";
+          avaliacaoStatus.textContent = "Sua avaliação foi salva.";
+        } catch (error) {
+          console.error("Erro ao salvar avaliação:", error);
+          avaliacaoStatus.className = "alert alert-danger mt-3 mb-0";
+          avaliacaoStatus.textContent = error.message;
+        } finally {
+          salvarAvaliacaoButton.disabled = false;
+        }
+      });
 
       // Mostra no máximo cinco integrantes do elenco incorporado à resposta.
       if (show._embedded?.cast && show._embedded.cast.length > 0) {
