@@ -67,17 +67,24 @@ export async function listarSeries() {
   return response.json();
 }
 
+// Procura o documento local correspondente ao ID público da TVmaze.
+export async function buscarSerieSalva(tvmazeId) {
+  const filtro = encodeURIComponent(JSON.stringify({ tvmazeId }));
+  let response = await fetch(`${colecaoSeries}?filter=${filtro}&pagesize=1`, { headers });
+
+  if (response.status === 404) {
+    await garantirBancoEColecao();
+    response = await fetch(`${colecaoSeries}?filter=${filtro}&pagesize=1`, { headers });
+  }
+  await verificarResposta(response, "A consulta da série no banco");
+
+  const [serie] = await response.json();
+  return serie ?? null;
+}
+
 // Evita duplicatas e cadastra uma nova série na coleção.
 export async function guardarSerie(show) {
-  const filtro = encodeURIComponent(JSON.stringify({ tvmazeId: show.id }));
-  let consulta = await fetch(`${colecaoSeries}?filter=${filtro}&pagesize=1`, { headers });
-  if (consulta.status === 404) {
-    await garantirBancoEColecao();
-    consulta = await fetch(`${colecaoSeries}?filter=${filtro}&pagesize=1`, { headers });
-  }
-  await verificarResposta(consulta, "A verificação de série existente");
-
-  if ((await consulta.json()).length > 0) {
+  if (await buscarSerieSalva(show.id)) {
     throw new Error(`${show.name} já está guardada no banco.`);
   }
 
@@ -93,4 +100,52 @@ export async function guardarSerie(show) {
     response = await fetch(colecaoSeries, opcoes);
   }
   await verificarResposta(response, "A gravação da série no banco");
+}
+
+// Alterna o favorito de um documento salvo ou cria a série já favoritada.
+export async function alternarFavorito(show) {
+  const serieSalva = await buscarSerieSalva(show.id);
+  if (!serieSalva) {
+    const documento = criarDocumento(show);
+    documento.favorito = true;
+    const response = await fetch(colecaoSeries, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(documento),
+    });
+    await verificarResposta(response, "O cadastro da série favorita");
+    return true;
+  }
+
+  const id = serieSalva._id?.$oid ?? serieSalva._id;
+  if (!id) throw new Error("O documento salvo não possui um ID válido.");
+  const favorito = !serieSalva.favorito;
+  const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({
+      favorito,
+      atualizadoEm: new Date().toISOString(),
+    }),
+  });
+  await verificarResposta(response, "A atualização do favorito");
+  return favorito;
+}
+
+// Altera o favorito usando um documento que já foi carregado da coleção.
+export async function alternarFavoritoDocumento(serie) {
+  const id = serie._id?.$oid ?? serie._id;
+  if (!id) throw new Error("O documento salvo não possui um ID válido.");
+  const favorito = !serie.favorito;
+
+  const response = await fetch(`${colecaoSeries}/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({
+      favorito,
+      atualizadoEm: new Date().toISOString(),
+    }),
+  });
+  await verificarResposta(response, "A atualização do favorito");
+  return favorito;
 }

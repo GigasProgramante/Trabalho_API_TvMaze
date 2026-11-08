@@ -1,5 +1,14 @@
 // Cria um card reutilizável para resultados da busca ou séries já salvas.
-export function criarCardSerie(serie, { aoGuardar, mostrarDetalhes = true } = {}) {
+export function criarCardSerie(
+  serie,
+  {
+    aoGuardar,
+    aoFavoritar,
+    guardada = false,
+    favorita = serie.favorito === true,
+    mostrarDetalhes = true,
+  } = {}
+) {
   const coluna = document.createElement("div");
   coluna.className = "col";
 
@@ -36,10 +45,20 @@ export function criarCardSerie(serie, { aoGuardar, mostrarDetalhes = true } = {}
   // O botão de cadastro só aparece quando a tela fornece a ação correspondente.
   if (aoGuardar) {
     const botaoGuardar = document.createElement("button");
-    botaoGuardar.textContent = "Guardar no banco";
+    botaoGuardar.textContent = guardada ? "Guardada no banco" : "Guardar no banco";
     botaoGuardar.className = "btn btn-dark guardar";
+    botaoGuardar.disabled = guardada;
     botaoGuardar.addEventListener("click", () => aoGuardar(botaoGuardar));
     botoes.append(botaoGuardar);
+  }
+
+  // Permite marcar como favorita uma série da busca, salvando-a no banco se necessário.
+  if (aoFavoritar) {
+    const botaoFavoritar = document.createElement("button");
+    botaoFavoritar.textContent = favorita ? "♥ Desfavoritar" : "♡ Favoritar";
+    botaoFavoritar.className = "btn btn-outline-dark favoritar";
+    botaoFavoritar.addEventListener("click", () => aoFavoritar(botaoFavoritar));
+    botoes.append(botaoFavoritar);
   }
 
   // O detalhe usa o ID da TVmaze para buscar informações completas e elenco.

@@ -1,4 +1,4 @@
-import { listarSeries } from "./restheart.js";
+import { alternarFavoritoDocumento, listarSeries } from "./restheart.js";
 import { criarCardSerie } from "./series-card.js";
 
 const form = document.querySelector("#search-form");
@@ -26,7 +26,27 @@ function renderizarSeries(filtro = "") {
 
   seriesContainer.replaceChildren(
     ...seriesFiltradas.map((serie) =>
-      criarCardSerie(serie, { mostrarDetalhes: true })
+      criarCardSerie(serie, {
+        aoFavoritar: async (botao) => {
+          botao.disabled = true;
+          botao.textContent = "Atualizando...";
+
+          try {
+            serie.favorito = await alternarFavoritoDocumento(serie);
+            botao.textContent = serie.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+            botao.disabled = false;
+            status.textContent = serie.favorito
+              ? `${serie.nome} foi marcada como favorita.`
+              : `${serie.nome} foi removida dos favoritos.`;
+          } catch (error) {
+            console.error("Erro ao favoritar série salva:", error);
+            botao.disabled = false;
+            botao.textContent = serie.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+            status.textContent = error.message;
+          }
+        },
+        mostrarDetalhes: true,
+      })
     )
   );
 

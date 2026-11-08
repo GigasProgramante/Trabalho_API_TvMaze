@@ -1,4 +1,9 @@
-import { criarDocumento, guardarSerie } from "./restheart.js";
+import {
+  alternarFavorito,
+  criarDocumento,
+  listarSeries,
+  guardarSerie,
+} from "./restheart.js";
 import { criarCardSerie } from "./series-card.js";
 
 const tvMazeUrl = "https://api.tvmaze.com";
@@ -35,11 +40,48 @@ form.addEventListener("submit", async (event) => {
     }
 
     const results = await response.json();
+    let seriesSalvas = [];
+    try {
+      seriesSalvas = await listarSeries();
+    } catch (error) {
+      console.error("Não foi possível consultar os títulos já salvos:", error);
+    }
+    const salvasPorTvmazeId = new Map(
+      seriesSalvas.map((serie) => [serie.tvmazeId, serie])
+    );
 
     // Converte cada resultado ao modelo local e configura sua ação de cadastro.
     results.forEach(({ show }) => {
-      const serie = criarDocumento(show);
+      const salva = salvasPorTvmazeId.get(show.id);
+      const serie = {
+        ...criarDocumento(show),
+        favorito: salva?.favorito === true,
+      };
       const card = criarCardSerie(serie, {
+        aoFavoritar: async (botao) => {
+          botao.disabled = true;
+          botao.textContent = "Atualizando...";
+
+          try {
+            serie.favorito = await alternarFavorito(show);
+            botao.textContent = serie.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+            botao.disabled = false;
+            const botaoGuardar = botao.parentElement.querySelector(".guardar");
+            if (serie.favorito && botaoGuardar) {
+              botaoGuardar.textContent = "Guardada no banco";
+              botaoGuardar.disabled = true;
+            }
+            status.textContent = serie.favorito
+              ? `${show.name} foi marcada como favorita.`
+              : `${show.name} foi removida dos favoritos.`;
+          } catch (error) {
+            console.error("Erro ao favoritar no RESTHeart:", error);
+            botao.disabled = false;
+            botao.textContent = serie.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+            status.textContent = error.message;
+          }
+        },
+        guardada: Boolean(salva),
         aoGuardar: async (botao) => {
           botao.disabled = true;
           botao.textContent = "Guardando...";

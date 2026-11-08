@@ -1,3 +1,5 @@
+import { alternarFavorito, buscarSerieSalva } from "./restheart.js";
+
 // Lê o ID da série enviado pela tela de listagem na query string.
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
@@ -19,7 +21,7 @@ if (id) {
       if (!response.ok) throw new Error("Série não encontrada na base de dados do TVMaze.");
       return response.json();
     })
-    .then((show) => {
+    .then(async (show) => {
       container.replaceChildren();
 
       if (show.image?.original || show.image?.medium) {
@@ -61,6 +63,43 @@ if (id) {
         : "Descrição indisponível.";
       summary.className = "details-summary mb-4";
       container.append(summary);
+
+      // Carrega o estado salvo e permite alternar o favorito nesta página.
+      const botaoFavoritar = document.createElement("button");
+      botaoFavoritar.type = "button";
+      botaoFavoritar.className = "btn btn-dark align-self-start mb-4";
+      botaoFavoritar.textContent = "Verificando favorito...";
+      botaoFavoritar.disabled = true;
+      try {
+        show.favorito = (await buscarSerieSalva(show.id))?.favorito === true;
+        botaoFavoritar.textContent = show.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+        botaoFavoritar.disabled = false;
+      } catch (error) {
+        console.error("Erro ao consultar favorito:", error);
+        botaoFavoritar.textContent = "Estado do favorito indisponível";
+        botaoFavoritar.disabled = true;
+      }
+      botaoFavoritar.addEventListener("click", async () => {
+        botaoFavoritar.disabled = true;
+        botaoFavoritar.textContent = "Atualizando...";
+
+        try {
+          show.favorito = await alternarFavorito(show);
+          botaoFavoritar.textContent = show.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+          botaoFavoritar.setAttribute("aria-pressed", String(show.favorito));
+          botaoFavoritar.disabled = false;
+        } catch (error) {
+          console.error("Erro ao favoritar série:", error);
+          botaoFavoritar.disabled = false;
+          botaoFavoritar.textContent = show.favorito ? "♥ Desfavoritar" : "♡ Favoritar";
+          const aviso = document.createElement("p");
+          aviso.className = "alert alert-danger mb-4";
+          aviso.setAttribute("role", "alert");
+          aviso.textContent = error.message;
+          botaoFavoritar.after(aviso);
+        }
+      });
+      container.append(botaoFavoritar);
 
       // Mostra no máximo cinco integrantes do elenco incorporado à resposta.
       if (show._embedded?.cast && show._embedded.cast.length > 0) {
