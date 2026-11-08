@@ -28,6 +28,8 @@ services:
   # MongoDB database server
   mongodb:
     image: mongo:8.0
+    volumes:
+      - mongodb_data:/data/db
     # Run as replica set (required for change streams and transactions)
     command: ["--bind_ip_all", "--replSet", "rs0"]
     # Health check to initialize replica set
@@ -44,3 +46,20 @@ services:
       timeout: 10s # Wait up to 10 seconds for response
       retries: 5 # Retry 5 times before marking unhealthy
       start_period: 5s # Grace period before health checks start
+
+  # Nginx serves the static frontend on http://localhost:8081.
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./salvas.html:/usr/share/nginx/html/salvas.html:ro
+      - ./detalhes.html:/usr/share/nginx/html/detalhes.html:ro
+      - ./painel.html:/usr/share/nginx/html/painel.html:ro
+      - ./css:/usr/share/nginx/html/css:ro
+      - ./js:/usr/share/nginx/html/js:ro
+
+volumes:
+  mongodb_data:
+    name: tvmaze_mongodb_data
