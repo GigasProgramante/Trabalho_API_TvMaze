@@ -7,6 +7,7 @@ const status = document.querySelector("#status");
 const seriesContainer = document.querySelector("#series");
 let seriesSalvas = [];
 
+// Filtra os documentos carregados e atualiza os cards e a mensagem de estado.
 function renderizarSeries(filtro = "") {
   const termo = filtro.trim().toLocaleLowerCase();
   const seriesFiltradas = seriesSalvas.filter((serie) => {
@@ -36,11 +37,13 @@ function renderizarSeries(filtro = "") {
       : `${seriesFiltradas.length} série(s) guardada(s).`;
 }
 
+// Aplica o filtro digitado sem recarregar a página.
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   renderizarSeries(input.value);
 });
 
+// Busca a coleção no RESTHeart e exibe os resultados iniciais.
 try {
   seriesSalvas = await listarSeries();
   renderizarSeries();

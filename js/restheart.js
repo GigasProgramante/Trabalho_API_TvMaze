@@ -3,16 +3,19 @@ import { garantir } from "./restheart-api.mjs";
 export const colecaoSeries = "http://localhost:8080/tvmaze/series";
 const banco = colecaoSeries.slice(0, colecaoSeries.lastIndexOf("/"));
 
+// Credenciais e formato enviados nas requisições ao RESTHeart local.
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Basic ${btoa("admin:secret")}`,
 };
 
+// Cria o banco e a coleção caso ainda não existam.
 export async function garantirBancoEColecao() {
   await garantir(banco, "banco tvmaze", headers);
   await garantir(colecaoSeries, "coleção series", headers);
 }
 
+// Remove as tags HTML do resumo retornado pela TVmaze.
 function limparResumo(summary) {
   return summary
     ? new DOMParser()
@@ -21,6 +24,7 @@ function limparResumo(summary) {
     : "Descrição indisponível.";
 }
 
+// Adapta os campos da API pública ao documento usado pelo projeto.
 export function criarDocumento(show) {
   const canal = show.network ?? show.webChannel;
   const agora = new Date().toISOString();
@@ -46,6 +50,7 @@ export function criarDocumento(show) {
   };
 }
 
+// Transforma respostas HTTP malsucedidas em erros com contexto da operação.
 async function verificarResposta(response, acao) {
   if (response.ok) return;
 
@@ -55,12 +60,14 @@ async function verificarResposta(response, acao) {
   );
 }
 
+// Lê os documentos salvos no banco para a listagem e o painel.
 export async function listarSeries() {
   const response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
   await verificarResposta(response, "A consulta ao banco");
   return response.json();
 }
 
+// Evita duplicatas e cadastra uma nova série na coleção.
 export async function guardarSerie(show) {
   const filtro = encodeURIComponent(JSON.stringify({ tvmazeId: show.id }));
   let consulta = await fetch(`${colecaoSeries}?filter=${filtro}&pagesize=1`, { headers });
@@ -74,6 +81,7 @@ export async function guardarSerie(show) {
     throw new Error(`${show.name} já está guardada no banco.`);
   }
 
+  // Envia o documento somente depois de confirmar que a série ainda não existe.
   const opcoes = {
     method: "POST",
     headers,

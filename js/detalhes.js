@@ -1,7 +1,9 @@
+// Lê o ID da série enviado pela tela de listagem na query string.
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const container = document.querySelector("#detalhes");
 
+// Substitui o conteúdo da página por uma mensagem de erro acessível.
 function mostrarErro(mensagem) {
   const erro = document.createElement("p");
   erro.className = "alert alert-danger mb-0";
@@ -10,6 +12,7 @@ function mostrarErro(mensagem) {
   container.replaceChildren(erro);
 }
 
+// Consulta a TVmaze com o elenco e monta os detalhes da série selecionada.
 if (id) {
   fetch(`https://api.tvmaze.com/shows/${encodeURIComponent(id)}?embed=cast`)
     .then((response) => {
@@ -35,6 +38,7 @@ if (id) {
       const infoDiv = document.createElement("div");
       infoDiv.className = "details-metadata d-flex flex-wrap gap-2 mb-3";
 
+      // Reúne os metadados disponíveis em etiquetas junto ao título.
       const genres = show.genres?.join(", ") || "Não informado";
       const rating = show.rating?.average ? `⭐ ${show.rating.average}` : "⭐ N/A";
       const metadata = [
@@ -58,6 +62,7 @@ if (id) {
       summary.className = "details-summary mb-4";
       container.append(summary);
 
+      // Mostra no máximo cinco integrantes do elenco incorporado à resposta.
       if (show._embedded?.cast && show._embedded.cast.length > 0) {
         const castTitle = document.createElement("h3");
         castTitle.textContent = "Elenco Principal:";

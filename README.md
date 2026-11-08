@@ -226,9 +226,13 @@ Sequência testada no Insomnia, com a coleção `insomnia/colecao.json`. Ela cri
 | 6 | `DELETE /tvmaze/series/{id}` | 204 No Content |
 | 7 | `GET /tvmaze/series/{id}` | 404 Not Found (série excluída) |
 
-## Painel e conclusão
+## Painel de indicadores
 
-_A preencher: prints do painel (indicadores, gráficos, ranking e agrupamento) e um parágrafo com a conclusão tirada dos dados._
+Na página inicial, use o botão **Painel de indicadores**, ao lado de **Séries guardadas**, para abrir o painel. Ele consulta os documentos salvos no RESTHeart e exibe o total de séries, média das notas TVmaze, quantidade de favoritas, gêneros diferentes, gráficos por gênero e status, ranking das séries mais bem avaliadas e tabela de séries agrupadas por gênero.
+
+### Conclusão tirada dos dados
+
+_A preencher: prints do painel e um parágrafo com a conclusão que os dados permitem tirar._
 
 ## Uso de IA
 

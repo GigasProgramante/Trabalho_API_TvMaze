@@ -1,3 +1,4 @@
+// Garante um recurso RESTHeart e aceita tanto criação quanto recurso existente.
 export async function garantir(url, nome, headers) {
   const response = await fetch(url, { method: "PUT", headers });
   if (response.status !== 201 && response.status !== 200) {

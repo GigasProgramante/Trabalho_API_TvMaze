@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Define a codificação, o ajuste responsivo e os recursos visuais da página. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de indicadores | TVMaze Explorer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Chart.js desenha os gráficos usando as contagens calculadas no painel.js. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/painel.js" type="module"></script>
+</head>
+<body>
+    <!-- Contêiner principal que limita a largura do conteúdo do painel. -->
+    <main class="container py-4">
+        <!-- Identificação da página e atalhos para as outras áreas do sistema. -->
+        <header class="app-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-4">
+            <div class="header-titles">
+                <h1>Painel de indicadores</h1>
+                <p>Resumo do catálogo armazenado no banco de dados</p>
+            </div>
+            <nav class="d-flex flex-wrap gap-2" aria-label="Navegação principal">
+                <a class="btn btn-dark" href="salvas.html">Séries guardadas</a>
+                <a class="btn btn-outline-dark" href="index.html">Buscar séries</a>
+            </nav>
+        </header>
+
+        <!-- Exibe o carregamento inicial, a quantidade analisada ou erros de consulta. -->
+        <p id="status" class="alert alert-info status-message" role="status" aria-live="polite">
+            Carregando indicadores...
+        </p>
+
+        <!-- Quatro cartões recebem os valores calculados a partir dos documentos salvos. -->
+        <section class="row g-4 mb-4" aria-label="Indicadores do catálogo">
+            <!-- Total de documentos encontrados na coleção. -->
+            <div class="col-6 col-lg-3">
+                <article class="dashboard-card">
+                    <p class="dashboard-label">Séries cadastradas</p>
+                    <p class="dashboard-value" id="total-series">—</p>
+                </article>
+            </div>
+            <!-- Média das notas TVmaze que possuem valor numérico. -->
+            <div class="col-6 col-lg-3">
+                <article class="dashboard-card">
+                    <p class="dashboard-label">Média das notas TVmaze</p>
+                    <p class="dashboard-value" id="average-rating">—</p>
+                </article>
+            </div>
+            <!-- Quantidade de documentos marcados como favoritos. -->
+            <div class="col-6 col-lg-3">
+                <article class="dashboard-card">
+                    <p class="dashboard-label">Favoritas</p>
+                    <p class="dashboard-value" id="favorite-series">—</p>
+                </article>
+            </div>
+            <!-- Número de gêneros distintos presentes no catálogo. -->
+            <div class="col-6 col-lg-3">
+                <article class="dashboard-card">
+                    <p class="dashboard-label">Gêneros diferentes</p>
+                    <p class="dashboard-value" id="genre-count">—</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Gráficos Chart.js: gêneros mais frequentes e distribuição por status. -->
+        <section class="row g-4 mb-4" aria-label="Gráficos do catálogo">
+            <!-- O canvas é preenchido pelo gráfico de barras criado em painel.js. -->
+            <div class="col-lg-7">
+                <article class="dashboard-card">
+                    <h2 class="dashboard-section-title">Séries por gênero (top 8)</h2>
+                    <div class="dashboard-chart">
+                        <canvas id="genre-chart" role="img" aria-label="Gráfico de barras com quantidade de séries por gênero"></canvas>
+                    </div>
+                </article>
+            </div>
+            <!-- O canvas é preenchido pelo gráfico de rosca criado em painel.js. -->
+            <div class="col-lg-5">
+                <article class="dashboard-card">
+                    <h2 class="dashboard-section-title">Distribuição por status</h2>
+                    <div class="dashboard-chart">
+                        <canvas id="status-chart" role="img" aria-label="Gráfico de rosca com a distribuição de séries por status"></canvas>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Lista das maiores notas e tabela com a contagem de cada gênero. -->
+        <section class="row g-4">
+            <!-- O JavaScript cria até cinco itens ordenados da maior para a menor nota. -->
+            <div class="col-lg-6">
+                <article class="dashboard-card">
+                    <h2 class="dashboard-section-title">Ranking: maiores notas TVmaze</h2>
+                    <ol id="rating-ranking" class="list-group list-group-numbered"></ol>
+                </article>
+            </div>
+            <!-- Linhas inseridas pelo JavaScript agrupam o catálogo por gênero. -->
+            <div class="col-lg-6">
+                <article class="dashboard-card">
+                    <h2 class="dashboard-section-title">Séries agrupadas por gênero</h2>
+                    <div class="table-responsive">
+                        <table class="table dashboard-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Gênero</th>
+                                    <th scope="col">Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="genre-table"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
