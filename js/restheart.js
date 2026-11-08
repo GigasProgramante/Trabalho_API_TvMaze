@@ -1,4 +1,4 @@
-import { garantir } from "./restheart-api.mjs";
+import { garantir } from "./restheart-api.mjs?v=2";
 
 export const colecaoSeries = "http://localhost:8080/tvmaze/series";
 const banco = colecaoSeries.slice(0, colecaoSeries.lastIndexOf("/"));
@@ -62,7 +62,11 @@ async function verificarResposta(response, acao) {
 
 // Lê os documentos salvos no banco para a listagem e o painel.
 export async function listarSeries() {
-  const response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  let response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  if (response.status === 404) {
+    await garantirBancoEColecao();
+    response = await fetch(`${colecaoSeries}?pagesize=1000`, { headers });
+  }
   await verificarResposta(response, "A consulta ao banco");
   return response.json();
 }

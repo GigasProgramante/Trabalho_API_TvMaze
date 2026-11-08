@@ -26,7 +26,9 @@ Alternativamente, para que o comando seja executado em segundo plano, permitindo
 
 >docker compose up -d
 
-**Com isso, o banco já está funcionando e exposto via RESTHeart na porta 8080, tendo como link base da API: http://localhost:8080/**
+**Com isso, os serviços estarão disponíveis:** frontend pelo Nginx em `http://localhost:8081/` e API RESTHeart em `http://localhost:8080/`.
+
+O Nginx serve os arquivos do frontend e configura o tipo MIME dos módulos JavaScript, necessário para que o navegador carregue as funções da aplicação.
 
 ### Como conferir, parar e apagar o ambiente
 
@@ -39,7 +41,7 @@ docker compose down                # parar e remover os containers
 docker compose down -v             # parar e APAGAR todos os dados do banco
 ```
 
-Depois de um `down -v` (ou na primeira vez), rode a importação de novo: `node js/importar.mjs`.
+Depois de um `down -v` (ou na primeira vez), a coleção é inicializada pelo site. Para popular o catálogo novamente, rode `node js/importar.mjs`.
 
 ## Como enviar requisições ao banco
 

@@ -53,6 +53,7 @@ services:
     ports:
       - "8081:80"
     volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./index.html:/usr/share/nginx/html/index.html:ro
       - ./salvas.html:/usr/share/nginx/html/salvas.html:ro
       - ./detalhes.html:/usr/share/nginx/html/detalhes.html:ro
