@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Séries guardadas | TVMaze Explorer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- Carrega a listagem salva no banco e habilita o filtro local. -->
     <script src="js/salvas.js" type="module"></script>
@@ -22,7 +23,7 @@
             </nav>
         </header>
 
-        <!-- Busca local por nome, status, idioma ou gênero. -->
+        <!-- Busca e filtros locais por nome, status e gênero. -->
         <nav class="mb-4">
             <form id="search-form" class="input-group search-form">
                 <input
@@ -32,8 +33,56 @@
                     placeholder="Filtrar séries guardadas..."
                     aria-label="Filtrar séries guardadas"
                 >
-                <button class="btn btn-dark" type="submit">Filtrar</button>
+                <button class="btn btn-dark" type="submit" aria-label="Buscar séries guardadas" title="Buscar">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                </button>
+                <button
+                    id="filter-toggle"
+                    class="btn btn-dark"
+                    type="button"
+                    aria-label="Mostrar filtros"
+                    aria-expanded="false"
+                    aria-controls="filter-panel"
+                    title="Filtrar séries"
+                >
+                    <i class="bi bi-funnel" aria-hidden="true"></i>
+                </button>
             </form>
+            <section id="filter-panel" class="filter-panel mt-3" aria-label="Filtros das séries guardadas" hidden>
+                <div>
+                    <label class="form-label" for="status-filter">Status</label>
+                    <select id="status-filter" class="form-select">
+                        <option value="">Todos os status</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label" for="genre-filter">Gênero</label>
+                    <select id="genre-filter" class="form-select">
+                        <option value="">Todos os gêneros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label" for="minimum-score-filter">Pontuação mínima (0 a 10)</label>
+                    <input
+                        id="minimum-score-filter"
+                        class="form-control"
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.5"
+                        placeholder="Sem pontuação mínima"
+                    >
+                    <small class="form-text">Usa Minha nota quando definida; caso contrário, a nota TVmaze.</small>
+                </div>
+                <div class="form-check">
+                    <input id="favorites-only-filter" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="favorites-only-filter">Mostrar apenas favoritos</label>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <button id="apply-filters" class="btn btn-dark" type="button">Aplicar filtros</button>
+                    <button id="clear-filters" class="btn btn-outline-dark" type="button">Limpar filtros</button>
+                </div>
+            </section>
         </nav>
 
         <!-- Mensagens da consulta e espaço para os cards vindos do RESTHeart. -->
